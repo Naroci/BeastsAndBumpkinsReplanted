@@ -26,34 +26,39 @@ verhindert die Auswahl nicht. Die Spielsprache im Launcher wird davon nicht ver�
 weder Paketdaten noch zusätzliche Übersetzungen nach. Ohne JavaScript bleibt
 die statische deutsche Seite mit dem direkten Link zu GitHub Releases verfügbar.
 
-- Geplante Projektseite: <https://naroci.github.io/BeastsAndBumpkinsPublic/>
-- Downloads nach Veröffentlichung: <https://github.com/Naroci/BeastsAndBumpkinsPublic/releases>
-- Updatequelle nach dem ersten vollständigen Release: <https://naroci.github.io/BeastsAndBumpkinsPublic/updates.json>
+- Projektseite: <https://naroci.github.io/BeastsAndBumpkinsReplanted/>
+- Downloads nach Veröffentlichung: <https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases>
+- Updatequelle nach dem ersten vollständigen Release: <https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json>
 
-**Initialzustand:** lokal vorbereitet; keine veröffentlichten Builds werden
-vorgetäuscht. Vor dem ersten Release zeigt die Seite „Noch kein Download
-veröffentlicht“. `updates.json` wird erst bei einem echten, geprüften Release
-ausgeliefert. Die obigen Adressen sind bis zur Einrichtung keine Live-Zusage.
+**Downloadstatus:** Vor dem ersten vollständigen Release zeigt die Seite
+„Noch kein Download veröffentlicht“. `updates.json` wird erst bei einem echten,
+geprüften Release ausgeliefert. Die Verfügbarkeit eines Builds wird durch seinen Release bestimmt.
 
 ## GitHub einmalig einrichten
 
-Das Zielkonto `Naroci` ist aus dem vorhandenen Entwicklungsremote übernommen;
+Das Zielrepository `Naroci/BeastsAndBumpkinsReplanted` entspricht dem tatsächlich
+eingerichteten `origin`. Der lokale Ordner heißt weiterhin `BeastsAndBumpkinsPublic`;
 bei abweichendem Kontonamen die Links in `site/index.html`, `site/release.json`
 und den Standardwert in `scripts/distribution.py` anpassen.
 
-1. Auf GitHub ein **öffentliches**, leeres Repository `BeastsAndBumpkinsPublic`
+1. Auf GitHub ein **öffentliches**, leeres Repository `BeastsAndBumpkinsReplanted`
    anlegen (keine generierten README-/Lizenzdateien).
 2. Dieses lokale Repository hochladen:
 
    ```bash
    cd ~/GitHub/BeastsAndBumpkinsPublic
-   git remote add origin https://github.com/Naroci/BeastsAndBumpkinsPublic.git
+   git remote add origin https://github.com/Naroci/BeastsAndBumpkinsReplanted.git
    git push -u origin main
    ```
 
 3. **Settings → Pages → Build and deployment → Source: GitHub Actions** wählen.
-4. Unter **Actions** den Workflow „Project website and launcher manifest“ starten,
-   falls der erste Lauf vor dem Aktivieren von Pages erfolgte.
+4. Falls der erste Lauf vor dem Aktivieren von Pages erfolgte:
+   [den Workflow öffnen](https://github.com/Naroci/BeastsAndBumpkinsReplanted/actions/workflows/pages.yml),
+   rechts oberhalb der Durchläufe **Run workflow → Branch: main → Run workflow**
+   wählen. Über die Navigation: **Actions → links „Project website and launcher manifest“**.
+   Für den Start bei GitHub mit Schreibrechten anmelden. Die Datei
+   `.github/workflows/pages.yml` muss im Standardbranch liegen; `workflow_dispatch`
+   ist bereits enthalten.
 
 Es erfolgt kein automatischer Push durch die lokalen Werkzeuge. Der Workflow
 veröffentlicht nach späteren Pushes auf `main` und Releaseänderungen die Webseite.
@@ -87,7 +92,7 @@ muss kleiner als 2 GiB sein.** Die Webseite bleibt klein; ZIPs liegen in Release
 
    ```bash
    python3 tools/publish_launcher.py --runtime linux-x64 --version 0.2.0 \
-     --manifest-url https://naroci.github.io/BeastsAndBumpkinsPublic/updates.json \
+     --manifest-url https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json \
      --output build/public-launcher-0.2.0
    ```
 
@@ -99,7 +104,7 @@ muss kleiner als 2 GiB sein.** Die Webseite bleibt klein; ZIPs liegen in Release
    python3 tools/create_update_package.py --component launcher --runtime linux-x64 \
      --version 0.2.0 --directory build/public-launcher-0.2.0/replanted-launcher-linux-x64 \
      --entry-point replanted-launcher \
-     --url https://github.com/Naroci/BeastsAndBumpkinsPublic/releases/download/v0.2.0/launcher-linux-x64-0.2.0.zip \
+     --url https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v0.2.0/launcher-linux-x64-0.2.0.zip \
      --zip build/public-updates/launcher-linux-x64-0.2.0.zip \
      --manifest build/public-updates/updates.json
    ```
@@ -117,7 +122,7 @@ muss kleiner als 2 GiB sein.** Die Webseite bleibt klein; ZIPs liegen in Release
    python3 scripts/distribution.py prepare \
      --manifest /PFAD/ZUM/ENTWICKLUNGSPROJEKT/build/public-updates/updates.json \
      --archives /PFAD/ZUM/ENTWICKLUNGSPROJEKT/build/public-updates \
-     --repository Naroci/BeastsAndBumpkinsPublic --tag v0.2.0 \
+     --repository Naroci/BeastsAndBumpkinsReplanted --tag v0.2.0 \
      --output release-bundles/v0.2.0
    ```
 
@@ -163,7 +168,7 @@ Neue Launcherpakete mit obigem `--manifest-url` bauen. Das legt
 **Updates → Update-Manifest → Quelle speichern** und folgende URL eintragen:
 
 ```text
-https://naroci.github.io/BeastsAndBumpkinsPublic/updates.json
+https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json
 ```
 
 Ein bereits gesetzter Wert im globalen Launcherprofil hat Vorrang vor der

@@ -39,14 +39,14 @@ class DistributionTests(unittest.TestCase):
         d.write_json(self.path, self.manifest)
 
     def prepare(self):
-        return d.prepare(self.path, self.root, self.root / 'bundle', 'Naroci/BeastsAndBumpkinsPublic', 'v0.2.0')
+        return d.prepare(self.path, self.root, self.root / 'bundle', 'Naroci/BeastsAndBumpkinsReplanted', 'v0.2.0')
 
     def test_prepare_preserves_exact_zip_bytes_and_source_manifest(self):
         before = self.path.read_bytes()
         result = self.prepare()
         self.assertEqual((self.root / 'bundle' / self.archive.name).read_bytes(), self.archive.read_bytes())
         self.assertEqual(before, self.path.read_bytes())
-        self.assertEqual(result['launcher']['platforms']['linux-x64']['url'], f'https://github.com/Naroci/BeastsAndBumpkinsPublic/releases/download/v0.2.0/{self.archive.name}')
+        self.assertEqual(result['launcher']['platforms']['linux-x64']['url'], f'https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v0.2.0/{self.archive.name}')
         self.assertIn('updates.json', (self.root / 'bundle/SHA256SUMS.txt').read_text())
         with self.assertRaisesRegex(ValueError, 'Output exists'):
             self.prepare()
@@ -126,7 +126,7 @@ class DistributionTests(unittest.TestCase):
             d.validate_zip(self.archive, pkg)
 
     def test_no_release_site_has_no_invalid_update_manifest(self):
-        d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsPublic', offline=True)
+        d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted', offline=True)
         status = json.loads((self.root / 'dist/release.json').read_text())
         self.assertFalse(status['published'])
         self.assertFalse((self.root / 'dist/updates.json').exists())
@@ -134,7 +134,7 @@ class DistributionTests(unittest.TestCase):
 
     def published(self):
         manifest = self.prepare()
-        prefix = 'https://github.com/Naroci/BeastsAndBumpkinsPublic/releases/download/v0.2.0/'
+        prefix = 'https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v0.2.0/'
         self.release = {'tag_name': 'v0.2.0', 'draft': False, 'prerelease': False, 'assets': [
             {'name': 'updates.json', 'browser_download_url': prefix + 'updates.json'},
             {'name': self.archive.name, 'browser_download_url': prefix + self.archive.name, 'size': self.pkg['size'], 'state': 'uploaded', 'digest': 'sha256:' + self.pkg['sha256']}]}
@@ -143,7 +143,7 @@ class DistributionTests(unittest.TestCase):
     def test_published_assets_match_exact_release_hash_and_size(self):
         manifest = self.published()
         with patch.object(d, 'fetch', return_value=json.dumps(manifest).encode()):
-            actual, tag = d.remote_manifest('Naroci/BeastsAndBumpkinsPublic', self.release)
+            actual, tag = d.remote_manifest('Naroci/BeastsAndBumpkinsReplanted', self.release)
         self.assertEqual(actual, manifest)
         self.assertEqual(tag, 'v0.2.0')
 
@@ -153,7 +153,7 @@ class DistributionTests(unittest.TestCase):
             self.release['assets'][1]['digest'] = digest
             with patch.object(d, 'fetch', return_value=json.dumps(manifest).encode()):
                 with self.assertRaisesRegex(ValueError, 'digest'):
-                    d.remote_manifest('Naroci/BeastsAndBumpkinsPublic', self.release)
+                    d.remote_manifest('Naroci/BeastsAndBumpkinsReplanted', self.release)
 
     def test_cross_release_url_and_incomplete_release_block_publication(self):
         manifest = self.published()
@@ -161,33 +161,33 @@ class DistributionTests(unittest.TestCase):
         bad['launcher']['platforms']['linux-x64']['url'] = self.pkg['url'].replace('downloads.example.org', 'untrusted.example.org')
         with patch.object(d, 'fetch', return_value=json.dumps(bad).encode()):
             with self.assertRaisesRegex(ValueError, 'exact release'):
-                d.remote_manifest('Naroci/BeastsAndBumpkinsPublic', self.release)
+                d.remote_manifest('Naroci/BeastsAndBumpkinsReplanted', self.release)
         self.release['assets'].pop()
         with patch.object(d, 'fetch', return_value=json.dumps(manifest).encode()):
             with self.assertRaises(ValueError):
-                d.remote_manifest('Naroci/BeastsAndBumpkinsPublic', self.release)
+                d.remote_manifest('Naroci/BeastsAndBumpkinsReplanted', self.release)
 
     def test_prerelease_is_not_offered(self):
         self.published()
         self.release['prerelease'] = True
         with self.assertRaisesRegex(ValueError, 'stable-channel'):
-            d.remote_manifest('Naroci/BeastsAndBumpkinsPublic', self.release)
+            d.remote_manifest('Naroci/BeastsAndBumpkinsReplanted', self.release)
 
     def test_api_failure_is_not_treated_as_no_release(self):
         with patch.object(d, 'fetch', side_effect=HTTPError('https://api.github.com', 403, 'Forbidden', {}, None)):
             with self.assertRaises(HTTPError):
-                d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsPublic')
+                d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
         self.assertFalse((self.root / 'dist').exists())
 
     def test_404_only_means_no_release_after_public_repo_check(self):
-        with patch.object(d, 'fetch', side_effect=[json.dumps({'private': False, 'full_name': 'Naroci/BeastsAndBumpkinsPublic'}).encode(), HTTPError('https://api.github.com', 404, 'Not found', {}, None)]):
-            d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsPublic')
+        with patch.object(d, 'fetch', side_effect=[json.dumps({'private': False, 'full_name': 'Naroci/BeastsAndBumpkinsReplanted'}).encode(), HTTPError('https://api.github.com', 404, 'Not found', {}, None)]):
+            d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
         self.assertFalse(json.loads((self.root / 'dist/release.json').read_text())['published'])
 
     def test_release_website_and_manifest_are_built_together(self):
         manifest = self.published()
-        with patch.object(d, 'fetch', side_effect=[json.dumps({'private': False, 'full_name': 'Naroci/BeastsAndBumpkinsPublic'}).encode(), json.dumps(self.release).encode(), json.dumps(manifest).encode()]):
-            d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsPublic')
+        with patch.object(d, 'fetch', side_effect=[json.dumps({'private': False, 'full_name': 'Naroci/BeastsAndBumpkinsReplanted'}).encode(), json.dumps(self.release).encode(), json.dumps(manifest).encode()]):
+            d.build(d.ROOT / 'site', self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
         self.assertTrue(json.loads((self.root / 'dist/release.json').read_text())['published'])
         self.assertEqual(json.loads((self.root / 'dist/updates.json').read_text()), manifest)
 

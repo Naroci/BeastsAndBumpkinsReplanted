@@ -44,7 +44,7 @@ async function boot(release, manifest, fail = false, options = {}) {
   }
   const requests = [];
   const storage = options.storage || new Map();
-  const location = {href:options.href || 'https://naroci.github.io/BeastsAndBumpkinsPublic/', search:new URL(options.href || 'https://naroci.github.io/BeastsAndBumpkinsPublic/').search};
+  const location = {href:options.href || 'https://naroci.github.io/BeastsAndBumpkinsReplanted/', search:new URL(options.href || 'https://naroci.github.io/BeastsAndBumpkinsReplanted/').search};
   const document = {documentElement:{lang:'de'},getElementById:id=>elements[id],querySelectorAll:selector=>selector==='[data-os]'?buttons:translations[selector]||[],createElement:()=>new Element()};
   const context = vm.createContext({document,URL,URLSearchParams,location,
     history:{replaceState:(_,__,href)=>{location.href=href;location.search=new URL(href).search;}},
@@ -60,7 +60,7 @@ async function boot(release, manifest, fail = false, options = {}) {
   await new Promise(setImmediate);
   return {elements, buttons, requests, document, translations, storage, location, i18n:context.ReplantedI18n};
 }
-const repository = 'Naroci/BeastsAndBumpkinsPublic';
+const repository = 'Naroci/BeastsAndBumpkinsReplanted';
 const ready = {repository,published:true,tag:'v0.2.0',manifest:'updates.json'};
 const pkg = {url:`https://github.com/${repository}/releases/download/v0.2.0/launcher-linux-x64.zip`,sha256:'a'.repeat(64),size:123456,entryPoint:'replanted-launcher'};
 const manifest = {schemaVersion:1,launcher:{version:'0.2.0',platforms:{'linux-x64':pkg}}};
@@ -92,7 +92,7 @@ for (const bad of [{...pkg,url:'https://untrusted.example/file.zip'},{...pkg,sha
 assert.equal(state.requests.length,2,'Switching platforms must not make additional network requests');
 assert.ok(state.buttons.every(b=>Object.keys(b.listeners).join()==='click'),'No pointer-move handler');
 for (const language of ['de','en','fr','it','es']) {
-  const localized=await boot(ready,manifest,false,{href:`https://naroci.github.io/BeastsAndBumpkinsPublic/?lang=${language}`});
+  const localized=await boot(ready,manifest,false,{href:`https://naroci.github.io/BeastsAndBumpkinsReplanted/?lang=${language}`});
   assert.equal(localized.document.documentElement.lang,language);
   assert.equal(localized.document.title,dictionaries[language]['page.title']);
   assert.equal(localized.elements['release-status'].textContent,dictionaries[language]['status.ready'].replace('{tag}','v0.2.0').replace('{runtime}','linux-x64'));
@@ -107,9 +107,9 @@ for (const language of ['de','en','fr','it','es']) {
     if(os!=='linux'||arch!=='x64')assert.equal(localized.elements['launcher-meta'].textContent,dictionaries[language]['package.missing']);
   }
   assert.equal(localized.requests.length,2);
-  const offline=await boot(ready,manifest,true,{href:`https://naroci.github.io/BeastsAndBumpkinsPublic/?lang=${language}`});
+  const offline=await boot(ready,manifest,true,{href:`https://naroci.github.io/BeastsAndBumpkinsReplanted/?lang=${language}`});
   assert.equal(offline.elements['release-status'].textContent,dictionaries[language]['status.error']);
-  const empty=await boot({repository,published:false},null,false,{href:`https://naroci.github.io/BeastsAndBumpkinsPublic/?lang=${language}`});
+  const empty=await boot({repository,published:false},null,false,{href:`https://naroci.github.io/BeastsAndBumpkinsReplanted/?lang=${language}`});
   assert.equal(empty.elements['release-status'].textContent,dictionaries[language]['status.empty']);
 }
 const saved=new Map([['replanted.website.language','fr']]);

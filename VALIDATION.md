@@ -84,3 +84,19 @@ Weiterhin genau zwei initiale **Metadatenanfragen** bei vorhandenem Release.
 Die statischen Skripte werden zusätzlich normal als Seitenressourcen geladen.
 Keine Mausbewegungslistener, Engineanbindung oder Änderung nativer Spiel-/Launcherdateien.
 Diese Sprachabnahme bleibt lokal; die öffentliche Bereitstellung ist weiterhin offen.
+
+
+## PUB1-URL1 · Tatsächliches GitHub-Ziel
+
+Das lokale `origin` zeigt auf `Naroci/BeastsAndBumpkinsReplanted`; der lokale
+Ordnername `BeastsAndBumpkinsPublic` ist kein GitHub-Reponame. Linkvorgaben,
+No-JavaScript-Links, Releasewerkzeug-Standards, Testfixtures und Anleitung sind
+entsprechend gebunden. Der vorherige Workflowlink mit dem Ordnernamen lieferte
+404. Auf der richtigen GitHub-Workflowseite wurde der erfolgreiche manuelle
+Lauf #2 am 22.10.2026 beobachtet und vom Nutzer bestätigt. Das belegt den ersten
+Pages-Workflow, keine veröffentlichten Spielpakete oder Launcherdownloads.
+
+19 Paket-/Fehlerprüfungen und der vollständige Fünfsprachen-Frontendtest sind
+mit dem tatsächlichen Ziel erneut bestanden. Alle Spiel-/Input-/Renderpfade
+sowie das Sprachverhalten bleiben unverändert; geändert sind ausschließlich
+Adressvorgaben, Testfixtureadressen und Dokumentation.
