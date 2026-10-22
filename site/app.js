@@ -1,5 +1,7 @@
 'use strict';
 (() => {
+  const i18n = globalThis.ReplantedI18n;
+  const t = (key, values) => i18n.t(key, values);
   let os = navigator.platform.toLowerCase().includes('linux') ? 'linux' : navigator.platform.toLowerCase().includes('mac') ? 'osx' : 'win';
   let release = null;
   let manifest = null;
@@ -9,7 +11,7 @@
   function render() {
     document.querySelectorAll('[data-os]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.os === os)));
     const runtime = `${os}-${architecture.value}`;
-    status.textContent = loadError ? 'Release-Informationen derzeit nicht erreichbar. Bitte die GitHub-Releases direkt öffnen.' : manifest ? `Release ${release.tag} · ${runtime} · Download als ZIP` : 'Noch kein Download veröffentlicht. Neue Pakete erscheinen hier nach ihrer Freigabe.';
+    status.textContent = loadError ? t('status.error') : manifest ? t('status.ready', {tag: release.tag, runtime}) : t('status.empty');
     for (const component of ['launcher', 'game']) {
       const link = document.getElementById(`${component}-download`);
       const meta = document.getElementById(`${component}-meta`);
@@ -18,12 +20,12 @@
       link.removeAttribute('href');
       link.setAttribute('aria-disabled', 'true');
       meta.replaceChildren();
-      if (!pkg) { meta.textContent = manifest ? 'Für diese Plattform noch nicht veröffentlicht.' : 'Noch kein Paket veröffentlicht.'; continue; }
+      if (!pkg) { meta.textContent = manifest ? t('package.missing') : t('package.empty'); continue; }
       const expected = `https://github.com/${release.repository}/releases/download/${encodeURIComponent(release.tag)}/`;
-      if (!pkg.url.startsWith(expected) || !/^[a-f0-9]{64}$/i.test(pkg.sha256) || !Number.isSafeInteger(pkg.size) || pkg.size < 1) { meta.textContent = 'Ungültige Paketinformationen. Bitte Releasehinweise prüfen.'; continue; }
+      if (!pkg.url.startsWith(expected) || !/^[a-f0-9]{64}$/i.test(pkg.sha256) || !Number.isSafeInteger(pkg.size) || pkg.size < 1) { meta.textContent = t('package.invalid'); continue; }
       link.href = pkg.url;
       link.setAttribute('aria-disabled', 'false');
-      meta.textContent = `Version ${item.version} · ${(pkg.size / 1024 / 1024).toLocaleString('de-DE', {maximumFractionDigits: 1})} MiB · ${runtime}`;
+      meta.textContent = t('package.meta', {version: item.version, size: (pkg.size / 1024 / 1024).toLocaleString(i18n.language, {maximumFractionDigits: 1}), runtime});
       const checksum = document.createElement('span');
       checksum.className = 'checksum';
       checksum.textContent = `SHA-256: ${pkg.sha256}`;
@@ -32,6 +34,7 @@
   }
   document.querySelectorAll('[data-os]').forEach(button => button.addEventListener('click', () => { os = button.dataset.os; render(); }));
   architecture.addEventListener('change', render);
+  i18n.onChange(render);
   async function readJSON(path) {
     const response = await fetch(path, {cache: 'no-cache'});
     if (!response.ok) throw new Error(`HTTP ${response.status}`);

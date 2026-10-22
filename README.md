@@ -8,6 +8,24 @@ Dieses Repository stellt die kleine Projektwebseite, den öffentlichen
 Downloadkanal und das Update-Manifest für den bestehenden Launcher bereit.
 Der Entwicklungsquellstand und seine internen QA-Artefakte werden hier nicht gespiegelt.
 
+## Sprachen der Webseite
+
+Die Webseite unterstützt alle fünf Spielsprachen: **English, Deutsch, Français,
+Italiano und Español**. Die Sprachwahl oben auf der Seite übersetzt die Texte,
+Projekt-/Rechtehinweise, Downloadzustände, Seitentitel und zugänglichen Beschriftungen.
+Die dargestellte Launcheraufnahme zeigt weiterhin einen deutschen Entwicklungsstand.
+
+Die Reihenfolge bei der Auswahl lautet: gültiger URL-Parameter `?lang=en`
+(`de`, `fr`, `it`, `es` entsprechend), gespeicherte persönliche Auswahl,
+erste unterstützte Browsersprache, sonst Englisch. Eine manuelle Auswahl wird
+lokal gespeichert und in die URL übernommen. Blockierter Browserspeicher
+verhindert die Auswahl nicht. Die Spielsprache im Launcher wird davon nicht verändert.
+
+Übersetzungen stehen in `site/translations.js`, die Sprachsteuerung in
+`site/i18n.js`. Alle Sprachdaten werden mit der Seite geladen; Umschalten lädt
+weder Paketdaten noch zusätzliche Übersetzungen nach. Ohne JavaScript bleibt
+die statische deutsche Seite mit dem direkten Link zu GitHub Releases verfügbar.
+
 - Geplante Projektseite: <https://naroci.github.io/BeastsAndBumpkinsPublic/>
 - Downloads nach Veröffentlichung: <https://github.com/Naroci/BeastsAndBumpkinsPublic/releases>
 - Updatequelle nach dem ersten vollständigen Release: <https://naroci.github.io/BeastsAndBumpkinsPublic/updates.json>

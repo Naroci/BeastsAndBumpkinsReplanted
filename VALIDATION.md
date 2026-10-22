@@ -51,3 +51,36 @@ ihres Laufzeitpfades. Das Paket ändert keinen nativen Spiel-/Launchercode.
    Download/Hashprüfung/Installation abnehmen. Windows/macOS zusätzlich auf Geräten.
 
 Die Anleitung und alle konkreten Befehle stehen in [README.md](README.md).
+
+## LAUNCH-PUB1-L1 · Die fünf Spielsprachen
+
+Englisch, Deutsch, Französisch, Italienisch und Spanisch sind mit je **89**
+vollständigen Textschlüsseln umgesetzt. Einschließlich Projekt-/Rechtehinweisen,
+Downloadmeldungen, Seitentitel, Beschreibung, Bildalternativen und ARIA-Beschriftungen.
+
+Der erweiterte Frontend-Vertragstest besteht für alle **30 Sprach-/Plattform-
+kombinationen**, Offline-/Leerzustände in jeder Sprache, identische Platzhalter,
+unveränderte ZIP-URLs/Hashes, Auswahlpriorität URL → Speicher → Browser → Englisch,
+Speicherung und verweigerten Speicherzugriff. Sprachwechsel erhält System und
+Architektur und macht keine zusätzlichen Metadaten- oder Paketabfragen.
+Die vorhandenen 19 Python-Paketprüfungen bestehen weiter.
+
+Im Browser alle fünf Sprachen bei 1440 und 320 Pixeln geprüft, vollständige
+Screenshots gesichtet. Kein horizontaler Überlauf; zu lange mobile Überschriften
+brechen um. Die Titelzeilen des Projektabschnitts bleiben dabei getrennt.
+Manuelle Auswahl, Neuladen, Link ohne Sprachparameter mit gespeicherter Auswahl,
+expliziter Sprachlink und lokaler Downloadtest mit Architektur-/Sprachwechsel geprüft.
+Keine Browserwarnungen oder Skriptfehler im Prüflauf.
+
+Aktuelle isolierte Handler-CPU in Millisekunden; keine Browserbildratenmessung:
+
+| Vorgang | p50 | p95 | p99 | Maximum |
+|---|---:|---:|---:|---:|
+| 2.000 Plattform-Einzelaktionen | 0,002920 | 0,007060 | 0,009930 | 0,519640 |
+| 200 Stapel à 64 Ereignisse | 0,377960 | 0,493329 | 0,626400 | 0,674869 |
+| 500 Sprachwechsel | 0,025030 | 0,036600 | 0,095950 | 0,157770 |
+
+Weiterhin genau zwei initiale **Metadatenanfragen** bei vorhandenem Release.
+Die statischen Skripte werden zusätzlich normal als Seitenressourcen geladen.
+Keine Mausbewegungslistener, Engineanbindung oder Änderung nativer Spiel-/Launcherdateien.
+Diese Sprachabnahme bleibt lokal; die öffentliche Bereitstellung ist weiterhin offen.
