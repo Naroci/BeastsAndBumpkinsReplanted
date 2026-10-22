@@ -1,84 +1,44 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "gameData": {
+    "version": "1.0.0",
+    "sha256": "77e5f5495b42d1eafa0ea1705074b6900d3d80ea949db893a0e35f2805ab8ac7",
+    "size": 1195982947,
+    "assets": "data",
+    "contentSha256": "dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2",
+    "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/R221026/beasts-bumpkins-replanted-game-data-1.0.0.zip"
+  },
+  "game": {
+    "version": "0.1.0",
+    "platforms": {
+      "linux-x64": {
+        "sha256": "b1aef604ea6842d0771c83a32a166c2e3c4b2d684cc61e8c915737ef06b6c2c4",
+        "size": 5575704,
+        "entryPoint": "bin/bbgame",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/R221026/replanted-game-linux-x64-0.1.0-20261022-124556-e5831e86.zip"
+      },
+      "win-x64": {
+        "sha256": "c1d39abca73d91b54e8c213b08e521681d5037d00a39f788f20e42e66fb0f3a0",
+        "size": 13755568,
+        "entryPoint": "bin/bbgame.exe",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/R221026/replanted-game-win-x64-0.1.0-20261022-125145-3fe94e46.zip"
+      }
+    }
+  },
   "launcher": {
     "version": "0.3.0",
     "platforms": {
       "linux-x64": {
-        "url": "https://downloads.example.org/launcher-linux-x64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "replanted-launcher"
-      },
-      "linux-arm64": {
-        "url": "https://downloads.example.org/launcher-linux-arm64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "replanted-launcher"
+        "sha256": "b88f0c3914eb32b656ce0327777c292306ecd22df9091168a3028b4066a31b1f",
+        "size": 46940350,
+        "entryPoint": "replanted-launcher",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/R221026/replanted-launcher-linux-x64-0.3.0-20261022-124556-e5831e86.zip"
       },
       "win-x64": {
-        "url": "https://downloads.example.org/launcher-win-x64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "replanted-launcher.exe"
-      },
-      "win-arm64": {
-        "url": "https://downloads.example.org/launcher-win-arm64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "replanted-launcher.exe"
-      },
-      "osx-x64": {
-        "url": "https://downloads.example.org/launcher-osx-x64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "Replanted Launcher.app/Contents/MacOS/replanted-launcher"
-      },
-      "osx-arm64": {
-        "url": "https://downloads.example.org/launcher-osx-arm64-0.3.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "Replanted Launcher.app/Contents/MacOS/replanted-launcher"
-      }
-    }
-  },
-  "game": {
-    "version": "0.2.0",
-    "platforms": {
-      "linux-x64": {
-        "url": "https://downloads.example.org/game-linux-x64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bin/bbgame"
-      },
-      "linux-arm64": {
-        "url": "https://downloads.example.org/game-linux-arm64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bin/bbgame"
-      },
-      "win-x64": {
-        "url": "https://downloads.example.org/game-win-x64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bin/bbgame.exe"
-      },
-      "win-arm64": {
-        "url": "https://downloads.example.org/game-win-arm64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bin/bbgame.exe"
-      },
-      "osx-x64": {
-        "url": "https://downloads.example.org/game-osx-x64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bbgame.app/Contents/MacOS/bbgame"
-      },
-      "osx-arm64": {
-        "url": "https://downloads.example.org/game-osx-arm64-0.2.0.zip",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-        "size": 12345678,
-        "entryPoint": "bbgame.app/Contents/MacOS/bbgame"
+        "sha256": "ae62b074ea558e3e6594f339d3e9fddd61d678cf3ee9255eb5d2190ca780c56f",
+        "size": 74072723,
+        "entryPoint": "replanted-launcher.exe",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/R221026/replanted-launcher-win-x64-0.3.0-20261022-125145-3fe94e46.zip"
       }
     }
   }
