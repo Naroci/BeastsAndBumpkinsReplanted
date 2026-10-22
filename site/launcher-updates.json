@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "launcher": {
+    "version": "0.3.0",
+    "platforms": {
+      "linux-x64": {
+        "url": "https://downloads.example.org/launcher-linux-x64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "replanted-launcher"
+      },
+      "linux-arm64": {
+        "url": "https://downloads.example.org/launcher-linux-arm64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "replanted-launcher"
+      },
+      "win-x64": {
+        "url": "https://downloads.example.org/launcher-win-x64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "replanted-launcher.exe"
+      },
+      "win-arm64": {
+        "url": "https://downloads.example.org/launcher-win-arm64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "replanted-launcher.exe"
+      },
+      "osx-x64": {
+        "url": "https://downloads.example.org/launcher-osx-x64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "Replanted Launcher.app/Contents/MacOS/replanted-launcher"
+      },
+      "osx-arm64": {
+        "url": "https://downloads.example.org/launcher-osx-arm64-0.3.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "Replanted Launcher.app/Contents/MacOS/replanted-launcher"
+      }
+    }
+  },
+  "game": {
+    "version": "0.2.0",
+    "platforms": {
+      "linux-x64": {
+        "url": "https://downloads.example.org/game-linux-x64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bin/bbgame"
+      },
+      "linux-arm64": {
+        "url": "https://downloads.example.org/game-linux-arm64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bin/bbgame"
+      },
+      "win-x64": {
+        "url": "https://downloads.example.org/game-win-x64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bin/bbgame.exe"
+      },
+      "win-arm64": {
+        "url": "https://downloads.example.org/game-win-arm64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bin/bbgame.exe"
+      },
+      "osx-x64": {
+        "url": "https://downloads.example.org/game-osx-x64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bbgame.app/Contents/MacOS/bbgame"
+      },
+      "osx-arm64": {
+        "url": "https://downloads.example.org/game-osx-arm64-0.2.0.zip",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size": 12345678,
+        "entryPoint": "bbgame.app/Contents/MacOS/bbgame"
+      }
+    }
+  }
+}
