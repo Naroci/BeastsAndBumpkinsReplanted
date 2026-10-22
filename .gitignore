@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+dist/
+release-bundles/
+*.partial
+.DS_Store
