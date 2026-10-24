@@ -213,3 +213,24 @@ Die Webseite verändert keine Spiel-/HUD- oder Zeit-/RNG-/Eingabefunktionen.
 - [GitHub-Pages-Workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 - [GitHub-Release-Asset-API mit Digest](https://docs.github.com/en/rest/releases/assets)
 - [Projekt- und Rechtehinweise](NOTICE.md), [Bildquellen](ASSETS.md)
+
+
+### Launcher-Startpaket mit stabilem Einstieg
+
+Die Projektbuilds erzeugen zusätzlich `replanted-launcher-…-setup.zip` und
+`launcher-downloads.json`. Dieses ZIP ist der erste Launcherdownload: entpacken,
+`bb-replanted.exe` (Windows), `bb-replanted.sh` (Linux) oder den Root-App-Starter
+(macOS) öffnen. Runtime unter `bin/launcher`, weitere Ordner und fehlende
+Spiel-/Datenpakete legt der Launcher automatisch an.
+
+Setup-ZIP zusätzlich als unveränderliches Releaseasset hochladen. Die erzeugte
+`launcher-downloads.json` zusammen mit `launcher-updates.json` nach `site/`
+übernehmen; beide müssen dieselbe Launcherversion nennen. Die ZIP-Basis-URL
+beim Projektbau auf den öffentlichen Releasepfad setzen. Der Pages-Build prüft
+auch für das Startpaket Größe, Digest und öffentlichen Assetzustand.
+
+Ist diese Datei vorhanden, erzeugt der Build eine eigene `downloads.json` für
+die Webseite und verlinkt dort das Startpaket. Die tatsächliche Updaterdatei
+`launcher-updates.json` und deren `updates.json`-Kompatibilitätskopie behalten
+ihre flachen Update-ZIPs. Das Startpaket enthält weder Spieldaten noch Benutzer-
+profile/Saves. Eine nicht veröffentlichte Vorlage aktiviert keine Downloads.

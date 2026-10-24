@@ -282,6 +282,24 @@ def remote_manifest(repository, release, token=None):
     return manifest, tag
 
 
+def launcher_downloads(site, manifest, repository, token=None):
+    path = site / 'launcher-downloads.json'
+    if not path.is_file():
+        return None
+    downloads = parse(path.read_bytes())
+    if set(downloads) != {'schemaVersion', 'launcher'}:
+        raise ValueError('Launcher downloads must contain only the launcher release')
+    entries = list(configured_packages(downloads))
+    if downloads['launcher']['version'] != (manifest.get('launcher') or {}).get('version'):
+        raise ValueError('Launcher initial download and update versions differ')
+    for component, runtime, package in entries:
+        expected = 'bb-replanted.exe' if runtime.startswith('win-') else 'bb-replanted.command' if runtime.startswith('osx-') else 'bb-replanted.sh'
+        if component != 'launcher' or package['entryPoint'] != expected:
+            raise ValueError('Launcher initial download requires the root starter')
+    verify_configured_manifest(repository, downloads, token)
+    return {**manifest, 'launcher': downloads['launcher']}
+
+
 def build(site, output, repository, offline=False, token=None):
     repository = repo_name(repository)
     if output.exists() or output.resolve().is_relative_to(site.resolve()) or site.resolve().is_relative_to(output.resolve()):
@@ -291,6 +309,7 @@ def build(site, output, repository, offline=False, token=None):
     if configured and (source.get('repository') != repository or type(source.get('published')) is not bool):
         raise ValueError('release.json needs the matching repository and a boolean published flag')
     manifest, tag = None, None
+    downloads = None
     manifest_name = 'launcher-updates.json' if configured else 'updates.json'
     if not offline and (not configured or source['published']):
         # A 404 can mean "no releases" OR "repository inaccessible". Prove public repository access first.
@@ -300,6 +319,7 @@ def build(site, output, repository, offline=False, token=None):
         if configured:
             manifest = parse((site / manifest_name).read_bytes())
             verify_configured_manifest(repository, manifest, token)
+            downloads = launcher_downloads(site, manifest, repository, token)
             versions = [manifest[component]['version'] for component in ('launcher', 'game') if manifest.get(component)]
             tag = ' / '.join(versions)
         else:
@@ -312,7 +332,11 @@ def build(site, output, repository, offline=False, token=None):
                 manifest, tag = remote_manifest(repository, release, token)
     shutil.copytree(site, output)
     (output / 'updates.json').unlink(missing_ok=True)
-    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': manifest_name if configured or manifest else None})
+    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': 'downloads.json' if downloads else manifest_name if configured or manifest else None})
+    if downloads:
+        write_json(output / 'downloads.json', downloads)
+    else:
+        (output / 'downloads.json').unlink(missing_ok=True)
     if manifest:
         write_json(output / 'updates.json', manifest)
     (output / '.nojekyll').touch()

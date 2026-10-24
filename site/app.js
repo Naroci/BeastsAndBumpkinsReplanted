@@ -26,7 +26,7 @@
       const base = `https://github.com/${release.repository}/releases/download/`;
       const suffix = typeof pkg.url === 'string' ? pkg.url.slice(base.length) : '';
       const fixedAsset = typeof pkg.url === 'string' && pkg.url.startsWith(base) && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}\/[A-Za-z0-9][A-Za-z0-9_.-]*\.zip$/.test(suffix) && !suffix.startsWith('latest/');
-      const correctTag = fixedAsset && (release.manifest === 'launcher-updates.json' || pkg.url.startsWith(base + encodeURIComponent(release.tag) + '/'));
+      const correctTag = fixedAsset && (['launcher-updates.json', 'downloads.json'].includes(release.manifest) || pkg.url.startsWith(base + encodeURIComponent(release.tag) + '/'));
       if (!fixedAsset || !correctTag || !/^[a-f0-9]{64}$/i.test(pkg.sha256) || !Number.isSafeInteger(pkg.size) || pkg.size < 1) { meta.textContent = t('package.invalid'); continue; }
       link.href = pkg.url;
       link.setAttribute('aria-disabled', 'false');
@@ -52,7 +52,7 @@
       document.getElementById('all-releases').href = `https://github.com/${release.repository}/releases`;
       document.getElementById('repository-link').href = `https://github.com/${release.repository}`;
       if (release.published) {
-        if (!['updates.json', 'launcher-updates.json'].includes(release.manifest) || typeof release.tag !== 'string') throw new Error('Release ungültig');
+        if (!['updates.json', 'launcher-updates.json', 'downloads.json'].includes(release.manifest) || typeof release.tag !== 'string') throw new Error('Release ungültig');
         if (release.manifest === 'updates.json' && !/^[A-Za-z0-9_.-]+$/.test(release.tag)) throw new Error('Release ungültig');
         manifest = await readJSON(release.manifest);
         if (![1, 2].includes(manifest.schemaVersion) || (!manifest.launcher && !manifest.game)) throw new Error('Manifest ungültig');

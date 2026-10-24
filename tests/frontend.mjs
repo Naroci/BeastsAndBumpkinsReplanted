@@ -143,6 +143,12 @@ const current=await boot(currentReady,currentManifest);
 assert.deepEqual(current.requests,['release.json','launcher-updates.json']);
 assert.equal(current.elements['launcher-download'].attrs.href,currentManifest.launcher.platforms['linux-x64'].url);
 assert.equal(current.elements['game-download'].attrs.href,currentManifest.game.platforms['linux-x64'].url);
+const initialManifest = structuredClone(currentManifest);
+initialManifest.launcher.platforms['linux-x64'] = {...initialManifest.launcher.platforms['linux-x64'], url:`https://github.com/${repository}/releases/download/starter-build/launcher-setup.zip`, entryPoint:'bb-replanted.sh'};
+const initial = await boot({...currentReady,manifest:'downloads.json'},initialManifest);
+assert.deepEqual(initial.requests,['release.json','downloads.json']);
+assert.equal(initial.elements['launcher-download'].attrs.href,initialManifest.launcher.platforms['linux-x64'].url);
+assert.equal(initial.elements['game-download'].attrs.href,currentManifest.game.platforms['linux-x64'].url);
 for(const language of ['de','en','fr','it','es']) {
   current.elements.language.value=language;current.elements.language.listeners.change();
   for(const os of ['win','linux'])for(const arch of ['x64','arm64']) {

@@ -223,6 +223,40 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(config['manifest'], 'launcher-updates.json')
         self.assertEqual(config['tag'], ' / '.join(self.configured_manifest[c]['version'] for c in ('launcher','game')))
 
+    def starter_downloads(self, entry='bb-replanted.sh'):
+        self.configured()
+        package = {'url':'https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/starter-build/launcher-setup.zip', 'sha256':'a'*64, 'size':123, 'entryPoint':entry}
+        downloads = {'schemaVersion':2, 'launcher':{'version':self.configured_manifest['launcher']['version'], 'platforms':{'linux-x64':package}}}
+        d.write_json(self.site / 'launcher-downloads.json', downloads)
+        self.responses['https://api.github.com/repos/Naroci/BeastsAndBumpkinsReplanted/releases/tags/starter-build'] = {'tag_name':'starter-build', 'draft':False, 'prerelease':False, 'assets':[{'name':'launcher-setup.zip', 'browser_download_url':package['url'], 'size':package['size'], 'state':'uploaded', 'digest':'sha256:'+package['sha256']}]}
+        return downloads
+
+    def test_launcher_initial_download_is_offered_without_changing_updater_manifest(self):
+        downloads = self.starter_downloads()
+        before = (self.site / 'launcher-updates.json').read_bytes()
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        self.assertEqual(before, (self.root / 'dist/launcher-updates.json').read_bytes())
+        self.assertEqual(json.loads((self.root / 'dist/updates.json').read_text()), self.configured_manifest)
+        display = json.loads((self.root / 'dist/downloads.json').read_text())
+        self.assertEqual(display['launcher'], downloads['launcher'])
+        self.assertEqual(display['game'], self.configured_manifest['game'])
+        self.assertEqual(json.loads((self.root / 'dist/release.json').read_text())['manifest'], 'downloads.json')
+
+    def test_initial_download_rejects_flat_launcher_entry(self):
+        self.starter_downloads(entry='replanted-launcher')
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            with self.assertRaisesRegex(ValueError, 'root starter'):
+                d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        self.assertFalse((self.root / 'dist').exists())
+
+    def test_initial_download_requires_matching_launcher_version(self):
+        downloads = self.starter_downloads(); downloads['launcher']['version']='99.0.0'
+        d.write_json(self.site / 'launcher-downloads.json', downloads)
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            with self.assertRaisesRegex(ValueError, 'versions differ'):
+                d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+
     def test_configured_publication_flag_disables_without_querying_latest_release(self):
         self.configured(enabled=False)
         with patch.object(d, 'fetch', side_effect=AssertionError('Unexpected network access')):
