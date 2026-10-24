@@ -31,7 +31,7 @@ die statische deutsche Seite mit dem direkten Link zu GitHub Releases verfügbar
 - Gemeinsames Download-/Launcher-Manifest: <https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json>
 
 **Downloadstatus:** Der Schalter `published` in `site/release.json` steuert
-nur die Downloadschaltflächen der Webseite. Er steht zunächst auf `false`.
+nur die Downloadschaltflächen der Webseite. Er steht aktuell auf `true`; die vorhandenen Windows-/Linuxpakete sind freigegeben.
 Deine vorhandenen Release-Dateien und die öffentliche Launcher-Manifestdatei
 bleiben unabhängig davon erreichbar.
 
