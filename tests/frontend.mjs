@@ -149,6 +149,19 @@ const initial = await boot({...currentReady,manifest:'downloads.json'},initialMa
 assert.deepEqual(initial.requests,['release.json','downloads.json']);
 assert.equal(initial.elements['launcher-download'].attrs.href,initialManifest.launcher.platforms['linux-x64'].url);
 assert.equal(initial.elements['game-download'].attrs.href,currentManifest.game.platforms['linux-x64'].url);
+const setupSource=JSON.parse(fs.readFileSync(new URL('../site/launcher-downloads.json',import.meta.url),'utf8'));
+const downloadCatalog={...currentManifest,launcher:setupSource.launcher};
+const canonical=await boot({...currentReady,manifest:'launcher-downloads.json'},downloadCatalog);
+assert.deepEqual(canonical.requests,['release.json','launcher-downloads.json']);
+for(const language of ['de','en','fr','it','es']) {
+  canonical.elements.language.value=language;canonical.elements.language.listeners.change();
+  for(const os of ['win','linux'])for(const arch of ['x64','arm64']) {
+    canonical.buttons.find(button=>button.dataset.os===os).listeners.click();
+    canonical.elements.architecture.value=arch;canonical.elements.architecture.listeners.change();
+    for(const component of ['launcher','game'])assert.equal(canonical.elements[`${component}-download`].attrs.href,downloadCatalog[component].platforms[`${os}-${arch}`]?.url);
+  }
+}
+assert.equal(canonical.requests.length,2);
 for(const language of ['de','en','fr','it','es']) {
   current.elements.language.value=language;current.elements.language.listeners.change();
   for(const os of ['win','linux'])for(const arch of ['x64','arm64']) {

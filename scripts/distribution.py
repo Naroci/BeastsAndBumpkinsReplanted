@@ -305,9 +305,11 @@ def build(site, output, repository, offline=False, token=None):
     if output.exists() or output.resolve().is_relative_to(site.resolve()) or site.resolve().is_relative_to(output.resolve()):
         raise ValueError('Use a fresh output directory separate from site sources')
     source = parse((site / 'release.json').read_bytes())
-    configured = source.get('manifest') == 'launcher-updates.json'
+    configured = source.get('manifest') in ('launcher-updates.json', 'launcher-downloads.json')
     if configured and (source.get('repository') != repository or type(source.get('published')) is not bool):
         raise ValueError('release.json needs the matching repository and a boolean published flag')
+    if source.get('manifest') == 'launcher-downloads.json' and not (site / 'launcher-downloads.json').is_file():
+        raise ValueError('Selected launcher-downloads.json is missing')
     manifest, tag = None, None
     downloads = None
     manifest_name = 'launcher-updates.json' if configured else 'updates.json'
@@ -332,8 +334,12 @@ def build(site, output, repository, offline=False, token=None):
                 manifest, tag = remote_manifest(repository, release, token)
     shutil.copytree(site, output)
     (output / 'updates.json').unlink(missing_ok=True)
-    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': 'downloads.json' if downloads else manifest_name if configured or manifest else None})
+    display_manifest = 'launcher-downloads.json' if downloads or source.get('manifest') == 'launcher-downloads.json' else manifest_name if configured or manifest else None
+    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': display_manifest})
     if downloads:
+        # Publish the selected download source, adding game/data metadata from the updater.
+        # Keep source files and the updater's flat launcher packages unchanged.
+        write_json(output / 'launcher-downloads.json', downloads)
         write_json(output / 'downloads.json', downloads)
     else:
         (output / 'downloads.json').unlink(missing_ok=True)

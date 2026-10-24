@@ -23,6 +23,8 @@ class DistributionTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.site = self.root / 'site'
         shutil.copytree(d.ROOT / 'site', self.site)
+        # Configured-download tests explicitly add their own setup inventory.
+        (self.site / 'launcher-downloads.json').unlink(missing_ok=True)
         d.write_json(self.site / 'release.json', {'repository':'Naroci/BeastsAndBumpkinsReplanted','published':False,'tag':None,'manifest':None})
         self.archive = self.root / 'launcher-linux-x64-0.2.0.zip'
         self.zip({'replanted-launcher': b'fixture executable', 'licenses/NOTICE.txt': b'fixture notice'})
@@ -234,6 +236,7 @@ class DistributionTests(unittest.TestCase):
     def test_launcher_initial_download_is_offered_without_changing_updater_manifest(self):
         downloads = self.starter_downloads()
         before = (self.site / 'launcher-updates.json').read_bytes()
+        before_downloads = (self.site / 'launcher-downloads.json').read_bytes()
         with patch.object(d, 'fetch', side_effect=self.configured_fetch):
             d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
         self.assertEqual(before, (self.root / 'dist/launcher-updates.json').read_bytes())
@@ -241,7 +244,46 @@ class DistributionTests(unittest.TestCase):
         display = json.loads((self.root / 'dist/downloads.json').read_text())
         self.assertEqual(display['launcher'], downloads['launcher'])
         self.assertEqual(display['game'], self.configured_manifest['game'])
-        self.assertEqual(json.loads((self.root / 'dist/release.json').read_text())['manifest'], 'downloads.json')
+        self.assertEqual(json.loads((self.root / 'dist/launcher-downloads.json').read_text()), display)
+        self.assertEqual(before_downloads, (self.site / 'launcher-downloads.json').read_bytes())
+        self.assertEqual(json.loads((self.root / 'dist/release.json').read_text())['manifest'], 'launcher-downloads.json')
+
+    def test_explicit_download_source_preserves_flat_updates_and_game_data(self):
+        downloads = self.starter_downloads()
+        config = json.loads((self.site / 'release.json').read_text())
+        config['manifest'] = 'launcher-downloads.json'
+        d.write_json(self.site / 'release.json', config)
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        shown = json.loads((self.root / 'dist/launcher-downloads.json').read_text())
+        self.assertEqual(shown['launcher'], downloads['launcher'])
+        self.assertEqual(shown['game'], self.configured_manifest['game'])
+        self.assertEqual(shown['gameData'], self.configured_manifest['gameData'])
+        updater = json.loads((self.root / 'dist/updates.json').read_text())
+        self.assertEqual(updater, self.configured_manifest)
+        self.assertNotEqual(shown['launcher'], updater['launcher'])
+
+    def test_explicit_download_source_does_not_silently_fall_back_when_missing(self):
+        self.configured()
+        config = json.loads((self.site / 'release.json').read_text())
+        config['manifest'] = 'launcher-downloads.json'
+        d.write_json(self.site / 'release.json', config)
+        with patch.object(d, 'fetch', side_effect=AssertionError('Unexpected network access')):
+            with self.assertRaisesRegex(ValueError, 'launcher-downloads.json is missing'):
+                d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        self.assertFalse((self.root / 'dist').exists())
+
+    def test_explicit_download_gate_and_offline_preview_make_no_network_requests(self):
+        self.starter_downloads()
+        config = json.loads((self.site / 'release.json').read_text())
+        config['manifest'] = 'launcher-downloads.json'
+        for enabled, offline in [(False, False), (True, True)]:
+            config['published'] = enabled
+            d.write_json(self.site / 'release.json', config)
+            output = self.root / ('offline' if offline else 'disabled')
+            with patch.object(d, 'fetch', side_effect=AssertionError('Unexpected network access')):
+                d.build(self.site, output, 'Naroci/BeastsAndBumpkinsReplanted', offline=offline)
+            self.assertFalse(json.loads((output / 'release.json').read_text())['published'])
 
     def test_initial_download_rejects_flat_launcher_entry(self):
         self.starter_downloads(entry='replanted-launcher')

@@ -28,7 +28,8 @@ die statische deutsche Seite mit dem direkten Link zu GitHub Releases verfügbar
 
 - Projektseite: <https://naroci.github.io/BeastsAndBumpkinsReplanted/>
 - Downloads nach Veröffentlichung: <https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases>
-- Gemeinsames Download-/Launcher-Manifest: <https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json>
+- Launcher-Erstdownloadquelle: <https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-downloads.json>
+- Launcher-Updatequelle: <https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json>
 
 **Downloadstatus:** Der Schalter `published` in `site/release.json` steuert
 nur die Downloadschaltflächen der Webseite. Er steht aktuell auf `true`; die vorhandenen Windows-/Linuxpakete sind freigegeben.
@@ -85,10 +86,12 @@ auch unter dem GitHub-Pages-Unterpfad; sämtliche lokalen Ressourcen sind relati
 
 ## Downloadlinks eintragen und freischalten
 
-**Die zentrale Datei ist [site/launcher-updates.json](site/launcher-updates.json).**
-Sie enthält bereits deine Launcher-, Spielclient- und Game-Data-Links. Die
-Webseite liest dieselbe Datei wie der Launcher, einschließlich Schema 2 und
-separaten Releases je Komponente. Kein Eintragen von Links im HTML nötig.
+**Der Launcherdownload der Webseite kommt aus
+[site/launcher-downloads.json](site/launcher-downloads.json).** Dort stehen die
+Setup-ZIPs mit Root-Starter. Spielclient und Spieldaten kommen ergänzend aus
+[site/launcher-updates.json](site/launcher-updates.json). Kein Eintragen von
+Links im HTML nötig. Die Seite lädt den beim Build zusammengesetzten Katalog
+unter `launcher-downloads.json`; die Quelldateien werden dabei nicht verändert.
 
 ### 1. ZIP-Dateien auf GitHub bereitstellen
 
@@ -103,7 +106,7 @@ ersetzen oder löschen; für neue Bytes einen neuen Dateinamen und Release-Tag
 verwenden. Den Downloadlink des konkreten ZIP-Assets kopieren, zum Beispiel:
 
 ```text
-https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v221026-2/replanted-launcher-win-x64-0.3.1.zip
+https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v241026/replanted-launcher-win-x64-0.4.4-20261024-065706-7fb68e60-setup.zip
 ```
 
 Das ist ein fester Assetlink. Die Releaseübersicht, Quellcodearchive und
@@ -111,16 +114,17 @@ Das ist ein fester Assetlink. Die Releaseübersicht, Quellcodearchive und
 
 ### 2. Links und Paketwerte im Manifest pflegen
 
-Auf GitHub [launcher-updates.json bearbeiten](https://github.com/Naroci/BeastsAndBumpkinsReplanted/edit/main/site/launcher-updates.json)
-oder lokal `site/launcher-updates.json` öffnen:
+Auf GitHub [launcher-downloads.json bearbeiten](https://github.com/Naroci/BeastsAndBumpkinsReplanted/edit/main/site/launcher-downloads.json)
+oder lokal `site/launcher-downloads.json` öffnen. Für Spiel-/Datenpakete und
+die flachen Launcherupdates zusätzlich `site/launcher-updates.json` pflegen:
 
-| Was | Eintrag im JSON |
-|---|---|
-| Launcher für Windows x64 | `launcher.platforms.win-x64.url` |
-| Launcher für Linux x64 | `launcher.platforms.linux-x64.url` |
-| Spielclient für Windows x64 | `game.platforms.win-x64.url` |
-| Spielclient für Linux x64 | `game.platforms.linux-x64.url` |
-| Gemeinsame Spieldaten | `gameData.url` |
+| Was | Quelldatei unter `site/` | Eintrag im JSON |
+|---|---|---|
+| Launcher-Setup für Windows x64 | `launcher-downloads.json` | `launcher.platforms.win-x64.url` |
+| Launcher-Setup für Linux x64 | `launcher-downloads.json` | `launcher.platforms.linux-x64.url` |
+| Spielclient für Windows x64 | `launcher-updates.json` | `game.platforms.win-x64.url` |
+| Spielclient für Linux x64 | `launcher-updates.json` | `game.platforms.linux-x64.url` |
+| Gemeinsame Spieldaten | `launcher-updates.json` | `gameData.url` |
 
 `version`, `sha256`, `size` und `entryPoint` müssen zum jeweiligen ZIP gehören.
 `size` ist die Größe der vollständigen ZIP in Bytes, `sha256` ihr SHA-256;
@@ -141,7 +145,7 @@ noch nicht veröffentlicht angezeigt.
   "repository": "Naroci/BeastsAndBumpkinsReplanted",
   "published": true,
   "tag": null,
-  "manifest": "launcher-updates.json"
+  "manifest": "launcher-downloads.json"
 }
 ```
 
@@ -157,7 +161,7 @@ Bearbeitung erst committen, dann pushen:
 
 ```bash
 cd ~/GitHub/BeastsAndBumpkinsPublic
-git add site/release.json site/launcher-updates.json
+git add site/release.json site/launcher-downloads.json site/launcher-updates.json
 git commit -m "Enable verified Windows and Linux downloads"
 git push origin main
 ```
@@ -179,7 +183,7 @@ Das Manifest-/Launcherprotokoll unterstützt weiterhin alle sechs bekannten RIDs
 ## Launcher verbinden
 
 Vorhandene Installationen unter **Updates → Update-Manifest → Quelle speichern**
-auf diese gemeinsame Datei verweisen:
+auf die Update-Datei verweisen:
 
 ```text
 https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json
@@ -195,7 +199,8 @@ als inhaltsgleiche Manifestkopie für ältere konfigurierte Adressen aus.
 ## Älterer Bereitstellungsweg
 
 `scripts/distribution.py prepare` bleibt für bestehende **Schema-1**-Bundles
-verfügbar. Wenn in `site/release.json` kein `launcher-updates.json` gewählt ist,
+verfügbar. Wenn in `site/release.json` weder `launcher-downloads.json` noch
+`launcher-updates.json` gewählt ist,
 verwendet der Build weiterhin den alten Weg: `updates.json` aus dem neuesten
 normalen Release, mit allen ZIPs in genau diesem Release. Für dein aktuelles
 Schema-2-Manifest und die getrennten Releases ist dieser Zusatzschritt nicht nötig.
@@ -229,8 +234,16 @@ Setup-ZIP zusätzlich als unveränderliches Releaseasset hochladen. Die erzeugte
 beim Projektbau auf den öffentlichen Releasepfad setzen. Der Pages-Build prüft
 auch für das Startpaket Größe, Digest und öffentlichen Assetzustand.
 
-Ist diese Datei vorhanden, erzeugt der Build eine eigene `downloads.json` für
-die Webseite und verlinkt dort das Startpaket. Die tatsächliche Updaterdatei
+`site/release.json` wählt ausdrücklich `launcher-downloads.json`. Der Build
+veröffentlicht unter diesem Namen den Downloadkatalog mit Setup-ZIPs sowie
+ergänzten Spiel-/Datenmetadaten. `downloads.json` bleibt eine Kompatibilitätskopie.
+Die Setup-Quelldatei bleibt unverändert. Fehlt die ausdrücklich gewählte Datei,
+bricht der Build ab. Die tatsächliche Updaterdatei
 `launcher-updates.json` und deren `updates.json`-Kompatibilitätskopie behalten
 ihre flachen Update-ZIPs. Das Startpaket enthält weder Spieldaten noch Benutzer-
 profile/Saves. Eine nicht veröffentlichte Vorlage aktiviert keine Downloads.
+
+`launcher-downloads.json` ist die Quelle für den **ersten Launcherdownload**,
+kein Ersatz für die Update-Quelle in einem laufenden Launcher. Setup-ZIPs
+enthalten bereits die Ordnerstruktur; die Update-Datei benötigt weiterhin
+flache Launcherpakete, damit kein verschachteltes Installationslayout entsteht.

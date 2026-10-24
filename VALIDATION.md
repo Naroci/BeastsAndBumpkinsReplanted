@@ -1,5 +1,38 @@
 # Lokale Abnahme
 
+## PUB1-DL3 · launcher-downloads.json als Webseitenquelle · 24.10.2026
+
+`site/release.json` wählt ausdrücklich `launcher-downloads.json`. Deren beide
+vorhandenen Setup-ZIPs sind die Quelle für den ersten Launcherdownload.
+Der Build ergänzt Spiel-/Datenmetadaten aus `launcher-updates.json` und
+veröffentlicht den Katalog unter `launcher-downloads.json`. Fehlt die gewählte
+Quelldatei, wird kein Ersatz angeboten. `downloads.json` bleibt eine identische
+Kompatibilitätskopie. Beide ursprünglichen Buildverfahren bleiben unterstützt.
+
+Die native Updatequelle bleibt `launcher-updates.json` mit flachen Paketen;
+`updates.json` ist weiterhin deren inhaltsgleiche Kopie. Setup-ZIPs werden nicht
+als native Updatepakete verwendet. Die vorhandene Setup-Quelldatei bleibt
+bytegleich; in der vom Nutzer aktualisierten Update-Datei wurden ausschließlich
+vier falsche `/releases/tag/`-Adressen zu festen `/releases/download/`-ZIP-URLs
+korrigiert. Versionen, Dateinamen, Größen, Hashes und Einstiege bleiben erhalten.
+
+36 Python-Prüfungen und der Frontendtest mit allen fünf Sprachen bestanden.
+Gebunden sind die kanonische Downloadquelle, Zwei-Anfragen-Verhalten,
+verfügbare/fehlende Plattformen, fehlende Quelldatei, Freigabe/Offlinezustand,
+Setup-/Update-Trennung und bisherige Fehlerprüfungen. Der reale Build bestätigt
+alle sieben aktuellen öffentlichen Assets über URL, Tag, Größe und SHA-256-
+Digest: zwei Setup-ZIPs, vier Programmpakete und ein Datenpaket. Kein voller
+ZIP-Download oder nativer Installationslauf.
+
+Windows-/Linuxauswahl im Browser geprüft: Launcher 0.4.4 verlinkt auf Setup-ZIPs,
+Spielclient 0.1.4 auf die richtigen ZIPs. macOS bleibt ausgeblendet. Lokale
+Ganzseitenaufnahme und vollständiger Downloadausschnitt visuell gesichtet;
+die schmale Aufnahme zeigt beide aktiven Links ohne horizontalen Überlauf.
+Keine Warnungen/Skriptfehler. Kein CSS-/Layout- oder nativer Spielcode geändert.
+Vorherige Original-/Clientprüfgrenzen bleiben bestehen. Isolierte Handlerzeiten
+und Belege stehen im privaten PUB1-DL3-Nachweis; kein Browser-FPS-Nachweis.
+Dieses Paket ist lokal geprüft und committet; kein Push/Deployment ausgeführt.
+
 ## PUB1-DL1 · Downloadkonfiguration und macOS-Auswahl · 24.10.2026
 
 **Abgeschlossenes lokales Webseitenpaket.** `site/launcher-updates.json` bleibt
