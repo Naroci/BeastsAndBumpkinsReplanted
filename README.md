@@ -28,11 +28,12 @@ die statische deutsche Seite mit dem direkten Link zu GitHub Releases verfügbar
 
 - Projektseite: <https://naroci.github.io/BeastsAndBumpkinsReplanted/>
 - Downloads nach Veröffentlichung: <https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases>
-- Updatequelle nach dem ersten vollständigen Release: <https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json>
+- Gemeinsames Download-/Launcher-Manifest: <https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json>
 
-**Downloadstatus:** Vor dem ersten vollständigen Release zeigt die Seite
-„Noch kein Download veröffentlicht“. `updates.json` wird erst bei einem echten,
-geprüften Release ausgeliefert. Die Verfügbarkeit eines Builds wird durch seinen Release bestimmt.
+**Downloadstatus:** Der Schalter `published` in `site/release.json` steuert
+nur die Downloadschaltflächen der Webseite. Er steht zunächst auf `false`.
+Deine vorhandenen Release-Dateien und die öffentliche Launcher-Manifestdatei
+bleiben unabhängig davon erreichbar.
 
 ## GitHub einmalig einrichten
 
@@ -82,104 +83,122 @@ Die dabei ausgegebenen Zeiten messen Handler-CPU, keine Browserbildrate.
 oder ausschließlich das eigene alte `dist/` entfernen. Die Seite funktioniert
 auch unter dem GitHub-Pages-Unterpfad; sämtliche lokalen Ressourcen sind relativ.
 
-## Spiel und Launcher als Release anbieten
+## Downloadlinks eintragen und freischalten
 
-GitHub unterstützt direkte Downloads hochgeladener Release-Assets. **Jede Datei
-muss kleiner als 2 GiB sein.** Die Webseite bleibt klein; ZIPs liegen in Releases.
+**Die zentrale Datei ist [site/launcher-updates.json](site/launcher-updates.json).**
+Sie enthält bereits deine Launcher-, Spielclient- und Game-Data-Links. Die
+Webseite liest dieselbe Datei wie der Launcher, einschließlich Schema 2 und
+separaten Releases je Komponente. Kein Eintragen von Links im HTML nötig.
 
-1. Die gewünschten Plattformen im Entwicklungsprojekt bauen und prüfen.
-   Die dortigen Werkzeuge unterstützen `--manifest-url`:
+### 1. ZIP-Dateien auf GitHub bereitstellen
 
-   ```bash
-   python3 tools/publish_launcher.py --runtime linux-x64 --version 0.2.0 \
-     --manifest-url https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json \
-     --output build/public-launcher-0.2.0
-   ```
+Unter [Releases](https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases)
+einen Release öffnen oder **Draft a new release** wählen. ZIPs als Assets
+hochladen, danach **Publish release**. Bereits veröffentlichte Dateien kannst du
+weiterverwenden. Auch ausdrücklich eingetragene öffentliche Vorabversionen
+sind zulässig. Entwürfe werden nicht angeboten.
 
-   Für Spielpakete entsprechend `tools/build_release.py --manifest-url URL`
-   verwenden. Normale `.tar.gz`-Archive sind **keine** Updaterpakete. Das
-   vorhandene `tools/create_update_package.py` erzeugt flache ZIPs mit Manifest:
+Jede Datei muss **kleiner als 2 GiB** sein. Bereits angebotene ZIPs nicht
+ersetzen oder löschen; für neue Bytes einen neuen Dateinamen und Release-Tag
+verwenden. Den Downloadlink des konkreten ZIP-Assets kopieren, zum Beispiel:
 
-   ```bash
-   python3 tools/create_update_package.py --component launcher --runtime linux-x64 \
-     --version 0.2.0 --directory build/public-launcher-0.2.0/replanted-launcher-linux-x64 \
-     --entry-point replanted-launcher \
-     --url https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v0.2.0/launcher-linux-x64-0.2.0.zip \
-     --zip build/public-updates/launcher-linux-x64-0.2.0.zip \
-     --manifest build/public-updates/updates.json
-   ```
+```text
+https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v221026-2/replanted-launcher-win-x64-0.3.1.zip
+```
 
-   Für den Spielclient den **ausgepackten Spiel-Runtimeordner ohne Hüllordner**
-   verwenden, beispielsweise `--component game --entry-point bin/bbgame`.
-   Weitere Plattformen derselben Komponentenversion in dasselbe Manifest aufnehmen.
-   Nur Plattformen mit vorhandenen, geprüften ZIPs aufnehmen. Launcher und Client
-   haben unabhängige Versionen. Bei einem neuen Release muss das Manifest alle
-   weiter angebotenen Komponenten enthalten, ggf. unveränderte ZIPs erneut anhängen.
-   Keine Profile, Saves, Original-CDs oder ungeprüften Datenbäume paketieren.
-2. Hier ein vollständiges Releasebundle vorbereiten:
+Das ist ein fester Assetlink. Die Releaseübersicht, Quellcodearchive und
+`releases/latest/download` sind keine geeigneten Updateziele.
 
-   ```bash
-   python3 scripts/distribution.py prepare \
-     --manifest /PFAD/ZUM/ENTWICKLUNGSPROJEKT/build/public-updates/updates.json \
-     --archives /PFAD/ZUM/ENTWICKLUNGSPROJEKT/build/public-updates \
-     --repository Naroci/BeastsAndBumpkinsReplanted --tag v0.2.0 \
-     --output release-bundles/v0.2.0
-   ```
+### 2. Links und Paketwerte im Manifest pflegen
 
-   Das prüft ZIP-Größen, komplette SHA-256, CRC, Dateipfade, verbotene
-   Benutzerpfade, Einstiegspunkte und Plattformschlüssel. Es kopiert die ZIPs
-   und erzeugt `updates.json`, `SHA256SUMS.txt`, `RELEASE-NOTES.md`. Download-URLs
-   werden auf genau diesen Release-Tag gesetzt. Das Quellmanifest bleibt unverändert.
-3. `RELEASE-NOTES.md` mit getesteten Plattformen, Installation, Datenvoraussetzungen,
-   Änderungen, bekannten Grenzen und Save-Kompatibilität vervollständigen.
-4. Auf GitHub **einen Releaseentwurf** für denselben Tag erstellen. Alle ZIPs,
-   `updates.json` und `SHA256SUMS.txt` aus dem Bundle hochladen. Die Notizen als
-   Releasebeschreibung verwenden, dann den vollständigen Release veröffentlichen.
-   Entwicklungsstand ausdrücklich als solchen beschreiben. Als **Latest** des
-   normalen Releasekanals veröffentlichen; Drafts/Prereleases werden nicht angeboten.
+Auf GitHub [launcher-updates.json bearbeiten](https://github.com/Naroci/BeastsAndBumpkinsReplanted/edit/main/site/launcher-updates.json)
+oder lokal `site/launcher-updates.json` öffnen:
 
-   Alternativ mit separat installiertem und angemeldetem GitHub CLI:
+| Was | Eintrag im JSON |
+|---|---|
+| Launcher für Windows x64 | `launcher.platforms.win-x64.url` |
+| Launcher für Linux x64 | `launcher.platforms.linux-x64.url` |
+| Spielclient für Windows x64 | `game.platforms.win-x64.url` |
+| Spielclient für Linux x64 | `game.platforms.linux-x64.url` |
+| Gemeinsame Spieldaten | `gameData.url` |
 
-   ```bash
-   gh release create v0.2.0 --draft --title 'Replanted 0.2.0 · Entwicklungsstand' \
-     --notes-file release-bundles/v0.2.0/RELEASE-NOTES.md \
-     release-bundles/v0.2.0/*.zip release-bundles/v0.2.0/updates.json \
-     release-bundles/v0.2.0/SHA256SUMS.txt
-   # Nach Prüfung des vollständigen Entwurfs:
-   gh release edit v0.2.0 --draft=false --latest
-   ```
+`version`, `sha256`, `size` und `entryPoint` müssen zum jeweiligen ZIP gehören.
+`size` ist die Größe der vollständigen ZIP in Bytes, `sha256` ihr SHA-256;
+beim Game-Data-Paket zusätzlich `contentSha256` für das Dateninventar und
+`assets: "data"`. Nicht nur den Link einer geänderten Datei austauschen.
+Die Werkzeuge im Entwicklungsprojekt, insbesondere
+`tools/create_update_package.py`, erzeugen diese Werte mit dem Paket.
+Nicht vorhandene Plattformen weglassen; ARM64-Downloads werden dann als
+noch nicht veröffentlicht angezeigt.
 
-5. Der Pages-Workflow liest den neuesten öffentlichen Release, prüft die
-   Assetgrößen und GitHubs SHA-256-Digests und veröffentlicht Webseite und
-   Manifest **gemeinsam**. Fehlen Dateien/Hashes, schlägt der Build fehl und
-   der zuvor erfolgreiche Pages-Stand bleibt erhalten. Das ist kein Rollback
-   eines gelöschten Release-Assets: einmal angebotene Dateien erhalten.
+### 3. Webseite freischalten
 
-**Versionierte ZIPs nach Veröffentlichung nicht ersetzen oder löschen.** Neue
-Version und neuer Tag bei Änderungen. Der Launcher prüft den kompletten Hash
-und die Größe nochmals beim Download. Für den Updater werden absichtlich feste
-`/releases/download/TAG/DATEI.zip`-Adressen verwendet; `latest/download` könnte
-während eines Updates auf andere Bytes wechseln.
+[site/release.json](site/release.json) beziehungsweise
+[die Datei auf GitHub bearbeiten](https://github.com/Naroci/BeastsAndBumpkinsReplanted/edit/main/site/release.json):
+
+```json
+{
+  "repository": "Naroci/BeastsAndBumpkinsReplanted",
+  "published": true,
+  "tag": null,
+  "manifest": "launcher-updates.json"
+}
+```
+
+**Zum Freischalten nur `published` von `false` auf `true` setzen.** `tag` darf
+`null` bleiben; der Build zeigt die tatsächlichen Komponenten-Versionen an.
+Mit `false` die Webseitenbuttons wieder deaktivieren. Das ist keine Zugriffssperre
+für bereits öffentliche GitHub-Assets und schaltet den Launcher-Updater nicht ab.
+
+### 4. Änderung veröffentlichen
+
+Änderungen auf GitHub mit **Commit changes** auf `main` speichern. Bei lokaler
+Bearbeitung erst committen, dann pushen:
+
+```bash
+cd ~/GitHub/BeastsAndBumpkinsPublic
+git add site/release.json site/launcher-updates.json
+git commit -m "Enable verified Windows and Linux downloads"
+git push origin main
+```
+
+Unter **Actions → Project website and launcher manifest** den Lauf prüfen.
+Er startet bei einem Push auf `main` automatisch; bei Bedarf **Run workflow**.
+Vor dem Deployment prüft er alle eingetragenen Assets – einschließlich Game
+Data – gegen GitHub: veröffentlichter Tag, richtige Datei, ZIP-Größe und SHA-256.
+Bei Fehlern bleibt der vorherige erfolgreiche Seitenstand bestehen. Es müssen
+keine ZIPs und keine zusätzliche `updates.json` an den neuesten Release gehängt
+werden. Die Links dürfen wie bisher auf unterschiedliche konkrete Releases zeigen.
+
+Nach erfolgreichem Lauf die [Downloads](https://naroci.github.io/BeastsAndBumpkinsReplanted/#downloads)
+öffnen oder neu laden. **macOS ist vorläufig aus der Webseitenauswahl entfernt**;
+auf einem Mac ist Windows vorausgewählt. Sichtbar sind Windows und Linux,
+jeweils x64/ARM64; nur vorhandene Pakete erhalten einen aktiven Downloadlink.
+Das Manifest-/Launcherprotokoll unterstützt weiterhin alle sechs bekannten RIDs.
 
 ## Launcher verbinden
 
-Neue Launcherpakete mit obigem `--manifest-url` bauen. Das legt
-`update-manifest-url.txt` neben die Installation. Bestehende Installationen:
-**Updates → Update-Manifest → Quelle speichern** und folgende URL eintragen:
+Vorhandene Installationen unter **Updates → Update-Manifest → Quelle speichern**
+auf diese gemeinsame Datei verweisen:
 
 ```text
-https://naroci.github.io/BeastsAndBumpkinsReplanted/updates.json
+https://naroci.github.io/BeastsAndBumpkinsReplanted/launcher-updates.json
 ```
 
-Ein bereits gesetzter Wert im globalen Launcherprofil hat Vorrang vor der
-mitgelieferten Vorgabe. Die Quelle erst nach dem erfolgreichen Pages-/Release-
-Deployment aktivieren. Ohne veröffentlichtes Manifest bleibt der Updater offline
-bedienbar; die Spielinstallation wird nicht durch diese Webseite verändert.
+Neue Pakete im Entwicklungsprojekt mit `--manifest-url` und dieser URL bauen.
+Ein bereits gesetzter Wert im globalen Launcherprofil hat Vorrang vor einer
+mitgelieferten `update-manifest-url.txt`. Die Webseite ändert kein Launcherprofil.
+Die vorhandene Datei und ihre URLs werden beim Webseitenbuild nicht umgeschrieben.
+Bei freigeschalteten Downloads liefert der Build zusätzlich `updates.json`
+als inhaltsgleiche Manifestkopie für ältere konfigurierte Adressen aus.
 
-Der vorhandene Launcher unterstützt `linux-x64`, `linux-arm64`, `win-x64`,
-`win-arm64`, `osx-x64`, `osx-arm64`. Das sind Protokollschlüssel, **keine Zusage
-vorhandener oder auf allen Geräten abgenommener Builds**. Nicht angebotene
-Plattformen zeigt die Webseite entsprechend an.
+## Älterer Bereitstellungsweg
+
+`scripts/distribution.py prepare` bleibt für bestehende **Schema-1**-Bundles
+verfügbar. Wenn in `site/release.json` kein `launcher-updates.json` gewählt ist,
+verwendet der Build weiterhin den alten Weg: `updates.json` aus dem neuesten
+normalen Release, mit allen ZIPs in genau diesem Release. Für dein aktuelles
+Schema-2-Manifest und die getrennten Releases ist dieser Zusatzschritt nicht nötig.
 
 ## Grenzen und Quellen
 

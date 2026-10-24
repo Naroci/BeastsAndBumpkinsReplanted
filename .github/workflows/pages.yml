@@ -31,7 +31,7 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Check platform selection and download states
         run: node tests/frontend.mjs
-      - name: Assemble website from latest complete release
+      - name: Assemble website and verify configured downloads
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python3 scripts/distribution.py build --output dist

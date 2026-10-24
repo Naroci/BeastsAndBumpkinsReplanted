@@ -101,6 +101,70 @@ def packages(manifest):
             yield component, runtime, pkg
 
 
+def configured_packages(manifest):
+    """Validate the website's existing launcher manifest without rewriting its URLs."""
+    if not isinstance(manifest, dict) or type(manifest.get('schemaVersion')) is not int or manifest['schemaVersion'] not in (1, 2):
+        raise ValueError('Configured manifest needs schema 1 or 2')
+    if manifest['schemaVersion'] == 1:
+        yield from packages(manifest)
+        return
+    if set(manifest) - {'schemaVersion', 'launcher', 'game', 'gameData'}:
+        raise ValueError('Unknown configured manifest component')
+    programs = {key: value for key, value in manifest.items() if key != 'gameData'}
+    programs['schemaVersion'] = 1
+    entries = list(packages(programs))
+    if any(pkg.get('assets') is not None for _, _, pkg in entries):
+        raise ValueError('Schema 2 requires a separate gameData package')
+    if 'gameData' in manifest:
+        data = manifest['gameData']
+        if not isinstance(data, dict) or set(data) != {'version', 'url', 'sha256', 'size', 'assets', 'contentSha256'}:
+            raise ValueError('Invalid gameData package')
+        if data['assets'] != 'data' or not isinstance(data['contentSha256'], str) or not re.fullmatch('[a-fA-F0-9]{64}', data['contentSha256']):
+            raise ValueError('gameData requires data/ and contentSha256')
+        probe = {'schemaVersion': 1, 'game': {'version': data['version'], 'platforms': {'linux-x64': {
+            key: data[key] for key in ('url', 'sha256', 'size')
+        } | {'entryPoint': 'data'}}}}
+        list(packages(probe))
+        entries.append(('gameData', None, data))
+    yield from entries
+
+
+def release_asset(repository, package):
+    """Only immutable asset URLs in this repository, including separate release tags."""
+    prefix = f'https://github.com/{repo_name(repository)}/releases/download/'
+    url = package['url']
+    if not url.startswith(prefix):
+        raise ValueError('Package must use an immutable release URL in this repository')
+    parts = url[len(prefix):].split('/')
+    if len(parts) != 2 or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*\.zip', parts[1]):
+        raise ValueError('Invalid release ZIP URL')
+    tag = tag_name(parts[0])
+    if tag == 'latest':
+        raise ValueError('Use a fixed release tag')
+    return tag, parts[1]
+
+
+def verify_configured_manifest(repository, manifest, token=None):
+    releases = {}
+    for _, _, package in configured_packages(manifest):
+        tag, filename = release_asset(repository, package)
+        if tag not in releases:
+            release = json.loads(fetch(f'https://api.github.com/repos/{repository}/releases/tags/{quote(tag, safe="")}', token))
+            # This mode follows explicitly selected links, including development prereleases.
+            if release.get('tag_name') != tag or release.get('draft'):
+                raise ValueError('Configured package requires a published release tag: ' + tag)
+            assets = release.get('assets', [])
+            by_name = {asset['name']: asset for asset in assets}
+            if len(by_name) != len(assets):
+                raise ValueError('Duplicate release asset names')
+            releases[tag] = by_name
+        asset = releases[tag].get(filename)
+        if not asset or asset.get('state') != 'uploaded' or asset.get('browser_download_url') != package['url'] or asset.get('size') != package['size']:
+            raise ValueError('Published asset missing or size mismatch: ' + filename)
+        if str(asset.get('digest', '')).lower() != 'sha256:' + package['sha256'].lower():
+            raise ValueError('Published asset digest missing or mismatches manifest: ' + filename)
+
+
 def validate_zip(path, pkg):
     if path.is_symlink() or not path.is_file() or path.stat().st_size != pkg['size']:
         raise ValueError('Missing ZIP or size mismatch: ' + str(path))
@@ -222,22 +286,33 @@ def build(site, output, repository, offline=False, token=None):
     repository = repo_name(repository)
     if output.exists() or output.resolve().is_relative_to(site.resolve()) or site.resolve().is_relative_to(output.resolve()):
         raise ValueError('Use a fresh output directory separate from site sources')
+    source = parse((site / 'release.json').read_bytes())
+    configured = source.get('manifest') == 'launcher-updates.json'
+    if configured and (source.get('repository') != repository or type(source.get('published')) is not bool):
+        raise ValueError('release.json needs the matching repository and a boolean published flag')
     manifest, tag = None, None
-    if not offline:
+    manifest_name = 'launcher-updates.json' if configured else 'updates.json'
+    if not offline and (not configured or source['published']):
         # A 404 can mean "no releases" OR "repository inaccessible". Prove public repository access first.
         metadata = json.loads(fetch(f'https://api.github.com/repos/{repository}', token))
         if metadata.get('private') or metadata.get('full_name', '').lower() != repository.lower():
             raise ValueError('Distribution repository must be public')
-        try:
-            release = json.loads(fetch(f'https://api.github.com/repos/{repository}/releases/latest', token))
-        except HTTPError as error:
-            if error.code != 404:
-                raise
+        if configured:
+            manifest = parse((site / manifest_name).read_bytes())
+            verify_configured_manifest(repository, manifest, token)
+            versions = [manifest[component]['version'] for component in ('launcher', 'game') if manifest.get(component)]
+            tag = ' / '.join(versions)
         else:
-            manifest, tag = remote_manifest(repository, release, token)
+            try:
+                release = json.loads(fetch(f'https://api.github.com/repos/{repository}/releases/latest', token))
+            except HTTPError as error:
+                if error.code != 404:
+                    raise
+            else:
+                manifest, tag = remote_manifest(repository, release, token)
     shutil.copytree(site, output)
     (output / 'updates.json').unlink(missing_ok=True)
-    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': 'updates.json' if manifest else None})
+    write_json(output / 'release.json', {'repository': repository, 'published': manifest is not None, 'tag': tag, 'manifest': manifest_name if configured or manifest else None})
     if manifest:
         write_json(output / 'updates.json', manifest)
     (output / '.nojekyll').touch()
@@ -252,7 +327,7 @@ def main():
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--repository', default='Naroci/BeastsAndBumpkinsReplanted')
     prep.add_argument('--tag', required=True)
-    page = commands.add_parser('build', help='Assemble Pages from latest published release, or an empty offline preview')
+    page = commands.add_parser('build', help='Assemble Pages from configured downloads or latest release; offline preview optional')
     page.add_argument('--site', type=Path, default=ROOT / 'site')
     page.add_argument('--output', type=Path, default=ROOT / 'dist')
     page.add_argument('--repository', default=os.environ.get('GITHUB_REPOSITORY', 'Naroci/BeastsAndBumpkinsReplanted'))

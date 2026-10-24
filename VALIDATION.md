@@ -1,4 +1,59 @@
-# Lokale Abnahme · 22.10.2026
+# Lokale Abnahme
+
+## PUB1-DL1 · Downloadkonfiguration und macOS-Auswahl · 24.10.2026
+
+**Abgeschlossenes lokales Webseitenpaket.** `site/launcher-updates.json` bleibt
+bytegleich zum Nutzerstand aus `775825f`. Die Webseite und der Pages-Build
+verstehen nun dieses Schema-2-Manifest mit separatem Game-Data-Paket und
+unterschiedlichen Release-Tags. Links werden ausschließlich dort gepflegt.
+`site/release.json` verweist darauf; `published` bleibt zunächst **false**.
+Der Schalter deaktiviert Webseitenbuttons, sperrt keine bereits öffentlichen
+Dateien und schaltet keinen vorhandenen Launcher-Updater ab.
+
+macOS ist aus der Webseitenauswahl entfernt; ein Mac-Browser erhält Windows
+als Vorauswahl. Windows und Linux bleiben mit x64/ARM64 auswählbar; fehlende
+Pakete ergeben keinen aktiven Link. Das Launcherprotokoll behält seine sechs RIDs.
+
+**Reproduktion:** `python3 -m unittest discover -s tests -v` und
+`node tests/frontend.mjs`. 30 Python-Prüfungen bestanden, einschließlich der
+bisherigen 19 Paket-/Fehlerprüfungen. Der Frontendtest prüft alle fünf Sprachen
+mit je 89 Schlüsseln, 20 sichtbare Sprach-/Plattformkombinationen, Mac-Fallback,
+Schema 2, unterschiedliche Tags, Freigabeschalter, unsichere URLs und unveränderte
+Sprachauswahl. Auswahlereignisse erzeugen keine zusätzlichen Metadatenanfragen.
+
+Der Freigabebuild prüft jedes eingetragene Asset einschließlich Game Data gegen
+die öffentliche GitHub-API: Tag, Uploadzustand, feste URL, Größe und SHA-256-Digest.
+Ausdrücklich konfigurierte öffentliche Vorabversionen sind erlaubt, Entwürfe
+nicht. Der ältere automatische Latest-Modus bleibt beim normalen Releasekanal.
+Die fünf tatsächlich eingetragenen Assets in `v221026-2` und `R221026` wurden
+live gegen GitHub-Metadaten bestätigt. Dazu wurden keine ZIPs heruntergeladen
+und keine native Installation ausgeführt. Eine lokale Freigabevorschau nutzt
+eine getrennte Kopie mit `published: true`; die Quellkonfiguration bleibt aus.
+
+**Sichtprüfung:** Downloadbereich vor/nach macOS-Ausblendung, deaktivierter und
+aktiver Zustand, passende Windows-/Linuxlinks sowie französische ARM64-Leer-
+und x64-Verfügbarkeit im Browser geprüft. Desktop- und 320-Pixel-Mobilcaptures
+sowie Downloadausschnitte visuell gesichtet. Das Differenzbild der deaktivierten
+Downloadbereiche zeigt ausschließlich das entfernte macOS-Label. Kein
+horizontaler Überlauf in der geprüften Mobilansicht und keine Browserwarnungen
+oder Skriptfehler. Dies ist eine Komponentenabnahme der Webseite, keine native
+Spiel-/Client- oder vollständige historische Originalbildabnahme.
+
+Isolierte Node-VM-Handler-CPU in Millisekunden, **keine Browserbildrate**:
+
+| Vorgang | p50 | p95 | p99 | Maximum |
+|---|---:|---:|---:|---:|
+| 2.000 wechselnde Einzelaktionen | 0,003080 | 0,005200 | 0,009730 | 0,295030 |
+| 200 Stapel à 64 Ereignisse | 0,468260 | 0,608960 | 0,705001 | 0,852651 |
+| 500 Sprachwechsel | 0,024200 | 0,039541 | 0,081060 | 0,154840 |
+
+Genau zwei initiale Metadatenanfragen bei aktiver Freigabe; keine zusätzlichen
+Auswahlabfragen, Mausbewegungslistener, Timer, Engine-/RNG-/Audioanbindung,
+Spielserialisierung oder Canvas-Komposition. Kein nativer Code geändert.
+Der verbleibende öffentliche Manifest-/ZIP-/Installationsverlauf ist PUB2.
+Push und Deployment dieses Pakets wurden bei dieser Abnahme nicht ausgeführt.
+
+## Historische Erstabnahme · 22.10.2026
 
 Die Bereitstellung ist lokal geprüft. Ein GitHub-Pages-Deployment oder ein
 öffentlicher Release wurde bei dieser Abnahme nicht durchgeführt.

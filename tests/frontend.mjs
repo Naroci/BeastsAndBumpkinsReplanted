@@ -9,6 +9,7 @@ const source = fs.readFileSync(new URL('../site/app.js', import.meta.url), 'utf8
 const translationSource = fs.readFileSync(new URL('../site/translations.js', import.meta.url), 'utf8');
 const languageSource = fs.readFileSync(new URL('../site/i18n.js', import.meta.url), 'utf8');
 const html = fs.readFileSync(new URL('../site/index.html', import.meta.url), 'utf8');
+assert.ok(!html.includes('data-os="osx"'), 'macOS must be absent from the public platform selection');
 const dictionaryContext = vm.createContext({});
 vm.runInContext(translationSource, dictionaryContext);
 const dictionaries = dictionaryContext.ReplantedMessages;
@@ -34,7 +35,7 @@ class Element {
 }
 async function boot(release, manifest, fail = false, options = {}) {
   const elements = Object.fromEntries(['release-status','architecture','launcher-download','launcher-meta','game-download','game-meta','all-releases','repository-link','language','language-picker'].map(id => [id,new Element()]));
-  const buttons = ['win','linux','osx'].map(os => new Element({os}));
+  const buttons = [...html.matchAll(/data-os="([^"]+)"/g)].map(match => new Element({os:match[1]}));
   const translations = {};
   for (const [suffix, datasetKey] of [['','i18n'],['-aria','i18nAria'],['-alt','i18nAlt'],['-description','i18nDescription']]) {
     translations[`[data-i18n${suffix}]`] = [...html.matchAll(new RegExp(`data-i18n${suffix}="([^"]+)"`, 'g'))].map(match => {
@@ -49,7 +50,7 @@ async function boot(release, manifest, fail = false, options = {}) {
   const context = vm.createContext({document,URL,URLSearchParams,location,
     history:{replaceState:(_,__,href)=>{location.href=href;location.search=new URL(href).search;}},
     localStorage:{getItem:key=>{if(options.blockStorage)throw Error('Denied');return storage.get(key)||null;},setItem:(key,value)=>{if(options.blockStorage)throw Error('Denied');storage.set(key,value);}},
-    navigator:{platform:'Linux x86_64',languages:options.languages || ['de-DE']},fetch:async(path)=>{
+    navigator:{platform:options.platform || 'Linux x86_64',languages:options.languages || ['de-DE']},fetch:async(path)=>{
     requests.push(path);
     if (fail) throw Error('Offline');
     return {ok:true,json:async()=>path==='release.json'?release:manifest};
@@ -76,7 +77,7 @@ assert.deepEqual(state.requests,['release.json','updates.json']);
 assert.equal(state.elements['launcher-download'].attrs.href,pkg.url);
 assert.equal(state.elements['game-download'].attrs.href,undefined);
 assert.equal(state.elements['launcher-meta'].children[0].textContent,`SHA-256: ${pkg.sha256}`);
-for (const os of ['win','linux','osx']) {
+for (const os of ['win','linux']) {
   for (const arch of ['x64','arm64']) {
     state.buttons.find(b=>b.dataset.os===os).listeners.click();
     state.elements.architecture.value=arch;
@@ -99,7 +100,7 @@ for (const language of ['de','en','fr','it','es']) {
   for(const el of localized.translations['[data-i18n]'])assert.equal(el.textContent,dictionaries[language][el.dataset.i18n]);
   for(const el of localized.translations['[data-i18n-aria]'])assert.equal(el.attrs['aria-label'],dictionaries[language][el.dataset.i18nAria]);
   for(const el of localized.translations['[data-i18n-alt]'])assert.equal(el.attrs.alt,dictionaries[language][el.dataset.i18nAlt]);
-  for(const os of ['win','linux','osx'])for(const arch of ['x64','arm64']) {
+  for(const os of ['win','linux'])for(const arch of ['x64','arm64']) {
     localized.buttons.find(b=>b.dataset.os===os).listeners.click();
     localized.elements.architecture.value=arch;
     localized.elements.architecture.listeners.change();
@@ -132,6 +133,32 @@ languageState=await boot(ready,manifest,false,{blockStorage:true,href:'https://e
 assert.equal(languageState.i18n.language,'it');
 languageState.elements.language.value='es';languageState.elements.language.listeners.change();
 assert.equal(languageState.i18n.language,'es','Storage denial must not prevent language selection');
+const mac=await boot(ready,manifest,false,{platform:'MacIntel'});
+assert.deepEqual(mac.buttons.map(button=>button.dataset.os),['win','linux']);
+assert.equal(mac.buttons.find(button=>button.attrs['aria-pressed']==='true').dataset.os,'win');
+assert.match(mac.elements['release-status'].textContent,/win-x64/);
+const currentReady={repository,published:true,tag:'0.3.1 / 0.1.0',manifest:'launcher-updates.json'};
+const currentManifest=JSON.parse(fs.readFileSync(new URL('../site/launcher-updates.json',import.meta.url),'utf8'));
+const current=await boot(currentReady,currentManifest);
+assert.deepEqual(current.requests,['release.json','launcher-updates.json']);
+assert.equal(current.elements['launcher-download'].attrs.href,currentManifest.launcher.platforms['linux-x64'].url);
+assert.equal(current.elements['game-download'].attrs.href,currentManifest.game.platforms['linux-x64'].url);
+for(const language of ['de','en','fr','it','es']) {
+  current.elements.language.value=language;current.elements.language.listeners.change();
+  for(const os of ['win','linux'])for(const arch of ['x64','arm64']) {
+    current.buttons.find(button=>button.dataset.os===os).listeners.click();
+    current.elements.architecture.value=arch;current.elements.architecture.listeners.change();
+    for(const component of ['launcher','game'])assert.equal(current.elements[`${component}-download`].attrs.href,currentManifest[component].platforms[`${os}-${arch}`]?.url);
+  }
+}
+assert.equal(current.requests.length,2);
+for(const url of [undefined, 'javascript:alert(1)',`https://github.com/Other/Repo/releases/download/v1/a.zip`,`https://github.com/${repository}/releases/latest/download/a.zip`,`https://github.com/${repository}/releases/download/v1/a.zip?token=x`,`https://github.com/${repository}/releases/download/../a.zip`]) {
+  const invalid=await boot(currentReady,{schemaVersion:2,launcher:{version:'1.0.0',platforms:{'linux-x64':{...pkg,url}}}});
+  assert.equal(invalid.elements['launcher-download'].attrs.href,undefined);
+}
+const gated=await boot({...currentReady,published:false},currentManifest);
+assert.deepEqual(gated.requests,['release.json']);
+assert.equal(gated.elements['launcher-download'].attrs.href,undefined);
 const stats = values => {
   values.sort((a,b)=>a-b);
   return Object.fromEntries([['p50',.5],['p95',.95],['p99',.99],['max',1]].map(([label,q])=>[label,Number(values[Math.min(values.length-1,Math.ceil(values.length*q)-1)].toFixed(6))]));
@@ -139,13 +166,13 @@ const stats = values => {
 const samples=[],batches=[],languageSamples=[];
 for(let i=0;i<2000;i++) {
   const start=performance.now();
-  state.buttons[i%3].listeners.click();
+  state.buttons[i%state.buttons.length].listeners.click();
   samples.push(performance.now()-start);
 }
 for(let i=0;i<200;i++) {
   const start=performance.now();
   for(let j=0;j<32;j++) {
-    state.buttons[(i+j)%3].listeners.click();
+    state.buttons[(i+j)%state.buttons.length].listeners.click();
     state.elements.architecture.value=j%2?'x64':'arm64';
     state.elements.architecture.listeners.change();
   }
@@ -159,4 +186,4 @@ for(let i=0;i<500;i++) {
   languageSamples.push(performance.now()-start);
 }
 assert.equal(state.requests.length,2);
-console.log(JSON.stringify({passed:true,languages:Object.keys(dictionaries),keysPerLanguage:Object.keys(dictionaries.de).length,coverage:'all five languages × six platforms, complete text/attributes/placeholders, URL/saved/browser priority, persistence, blocked storage, no-release, offline, immutable URLs and hashes, no extra per-selection fetches',timingScope:'Node VM handler CPU; excludes browser layout/paint and protocol latency',singleMs:stats(samples),batch64Ms:stats(batches),languageSwitchMs:stats(languageSamples),networkRequests:state.requests.length},null,2));
+console.log(JSON.stringify({passed:true,languages:Object.keys(dictionaries),keysPerLanguage:Object.keys(dictionaries.de).length,coverage:'five languages × four visible platform/architecture combinations; macOS absent and Mac host fallback; existing schema-2 manifest with different release tags; publication gate; unsafe URLs rejected; language persistence; no extra per-selection fetches',timingScope:'Node VM handler CPU; excludes browser layout/paint and protocol latency',singleMs:stats(samples),batch64Ms:stats(batches),languageSwitchMs:stats(languageSamples),networkRequests:state.requests.length},null,2));
