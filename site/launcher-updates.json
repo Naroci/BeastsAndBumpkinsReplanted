@@ -12,33 +12,33 @@
     "version": "0.1.8",
     "platforms": {
       "linux-x64": {
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-legacy-linux-x64-0.1.8-fbb771d3706c968d-ef6880d8f8c4cae1.zip",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v011120262/replanted-game-legacy-linux-x64-0.1.8-93e9e15f3a630f42-dd29dbb5b666c477.zip",
         "size": 5586019,
-        "sha256": "f091212fea6e35b9a16934a40783677a957c8f20f97acce2ffbd2f1190da9e57",
+        "sha256": "e5c96dade6e8f849c1ab2799aade599b797c25d884d1f4be1b38f722ab7162ac",
         "entryPoint": "bin/bbgame"
       },
       "win-x64": {
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-legacy-win-x64-0.1.8-b5f2d51b9cbd3adc-b985161cd77ffd6b.zip",
-        "size": 13761655,
-        "sha256": "4b0bacd936a4663ae1e2530d90f24fea7f54fd25ad6d45119f958df8d4e1a3c8",
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v011120262/replanted-game-legacy-win-x64-0.1.8-0d1d160a130f4364-200e86b1150a1fc8.zip",
+        "size": 13761648,
+        "sha256": "43b49da0d4d2231532ef9a5c9a7754b2cd931cb042350e51d5eb3abbd6cdf0bd",
         "entryPoint": "bin/bbgame.exe"
       }
     }
   },
   "launcher": {
-    "version": "0.5.0",
+    "version": "0.5.1",
     "platforms": {
       "linux-x64": {
-        "sha256": "f5eac91359ca41527165bd399d319f4fcd4a7b042b41f8ba9685a84ee1a15952",
-        "size": 53068740,
+        "sha256": "c1f45a09c909d303b3d4f9702c6b678ea632af6fa3de584ce7b44529b28af72f",
+        "size": 53069073,
         "entryPoint": "replanted-launcher",
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-linux-x64-0.5.0-20261101-120441-8b9058ae.zip"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v011120262/replanted-launcher-linux-x64-0.5.1-20261101-132322-d6cabf42.zip"
       },
       "win-x64": {
-        "sha256": "2ea8534ab4c038d22a9c64107a27ea8d07a599dbbea47940f781fcd9b55a9da8",
-        "size": 79116508,
+        "sha256": "23110383db8bfb27bd7b1fc60fdee979e50e89cae13079be216e20e3e68d2a7d",
+        "size": 79116851,
         "entryPoint": "replanted-launcher.exe",
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-win-x64-0.5.0-20261101-120824-49cf9990.zip"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v011120262/replanted-launcher-win-x64-0.5.1-20261101-132706-bac42e8a.zip"
       }
     }
   }
