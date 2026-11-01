@@ -41,6 +41,13 @@ def parse(data):
     return json.loads(data, object_pairs_hook=unique)
 
 
+def read_manifest(site, name):
+    try:
+        return parse((site / name).read_bytes())
+    except (ValueError, OSError) as error:
+        raise ValueError(f'{name}: {error}') from error
+
+
 def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
 
@@ -145,8 +152,12 @@ def release_asset(repository, package):
 
 
 def verify_configured_manifest(repository, manifest, token=None):
+    verify_assets(repository, configured_packages(manifest), token)
+
+
+def verify_assets(repository, entries, token=None):
     releases = {}
-    for _, _, package in configured_packages(manifest):
+    for _, _, package in entries:
         tag, filename = release_asset(repository, package)
         if tag not in releases:
             release = json.loads(fetch(f'https://api.github.com/repos/{repository}/releases/tags/{quote(tag, safe="")}', token))
@@ -282,22 +293,100 @@ def remote_manifest(repository, release, token=None):
     return manifest, tag
 
 
-def launcher_downloads(site, manifest, repository, token=None):
+def launcher_downloads(site, manifest, repository, token=None, verify=True):
     path = site / 'launcher-downloads.json'
     if not path.is_file():
         return None
-    downloads = parse(path.read_bytes())
-    if set(downloads) != {'schemaVersion', 'launcher'}:
-        raise ValueError('Launcher downloads must contain only the launcher release')
+    downloads = read_manifest(site, 'launcher-downloads.json')
     entries = list(configured_packages(downloads))
+    if 'launcher' not in downloads:
+        raise ValueError('Launcher downloads require a launcher release')
+    for component in ('game', 'gameData'):
+        if component in downloads and downloads[component] != manifest.get(component):
+            raise ValueError('Launcher download catalog disagrees with updates: ' + component)
     if downloads['launcher']['version'] != (manifest.get('launcher') or {}).get('version'):
         raise ValueError('Launcher initial download and update versions differ')
     for component, runtime, package in entries:
+        if component != 'launcher':
+            continue
         expected = 'bb-replanted.exe' if runtime.startswith('win-') else 'bb-replanted.command' if runtime.startswith('osx-') else 'bb-replanted.sh'
-        if component != 'launcher' or package['entryPoint'] != expected:
+        if package['entryPoint'] != expected:
             raise ValueError('Launcher initial download requires the root starter')
-    verify_configured_manifest(repository, downloads, token)
+    if verify:
+        verify_configured_manifest(repository, downloads, token)
     return {**manifest, 'launcher': downloads['launcher']}
+
+
+def edition_entries(catalog):
+    """Check downloadable v3 fields; keep edition/build metadata unchanged."""
+    required = {'schemaVersion', 'minLauncherVersion', 'launcher', 'games', 'dataReleases', 'legacyBaseline'}
+    if not isinstance(catalog, dict) or set(catalog) != required or type(catalog['schemaVersion']) is not int or catalog['schemaVersion'] != 3:
+        raise ValueError('Expected a complete schema-3 edition catalog')
+    if not re.fullmatch(r'\d{1,6}\.\d{1,6}\.\d{1,6}', str(catalog['minLauncherVersion']), re.ASCII):
+        raise ValueError('Invalid minimum launcher version')
+    if not isinstance(catalog['games'], dict) or not catalog['games'] or set(catalog['games']) - {'legacy', 'enhanced'}:
+        raise ValueError('Invalid edition inventory')
+    baseline = catalog['legacyBaseline']
+    if baseline.get('id') != 'LEGACY-20261101' or baseline.get('sourceCommit') != '05a508a43de1f71dd276d2d1fc71439e267974f0':
+        raise ValueError('The frozen Legacy reference must be preserved')
+    for component, release in [('launcher', catalog['launcher']), *catalog['games'].items()]:
+        if component != 'launcher' and release.get('editionId') != component:
+            raise ValueError('Edition identity mismatch')
+        core = core_release(release)
+        probe = {'schemaVersion': 1, 'game': core}
+        list(packages(probe))
+        for runtime, package in release['platforms'].items():
+            if package.get('runtime') != runtime or any(key not in catalog['dataReleases'] for key in package.get('dataIds', [])):
+                raise ValueError('Invalid edition runtime or data reference')
+            yield component, runtime, package
+    for identifier, data in catalog['dataReleases'].items():
+        inventory = data.get('inventoryHash', '')
+        if data.get('kind') not in ('base', 'addon') or not re.fullmatch('[a-fA-F0-9]{64}', inventory) or identifier != data['kind'] + '-' + inventory.lower():
+            raise ValueError('Invalid edition data identity')
+        if any(key not in catalog['dataReleases'] for key in data.get('dependencies', [])):
+            raise ValueError('Unknown edition data dependency')
+        package = {key: data[key] for key in ('url', 'size', 'sha256')}
+        probe = {'schemaVersion': 1, 'game': {'version': data['version'], 'platforms': {'linux-x64': {**package, 'entryPoint': 'data/game-data.json'}}}}
+        list(packages(probe))
+        yield 'data', identifier, data
+
+
+def core_release(release):
+    return {'version': release['version'], 'platforms': {runtime: {key: package[key] for key in ('url', 'size', 'sha256', 'entryPoint')}
+            for runtime, package in release['platforms'].items()}}
+
+
+def check_sources(site):
+    """Offline preflight: JSON, payload roles and compatibility/v3 agreement."""
+    source = read_manifest(site, 'release.json')
+    if source.get('manifest') not in ('launcher-updates.json', 'launcher-downloads.json'):
+        return {}
+    updates = read_manifest(site, 'launcher-updates.json')
+    list(configured_packages(updates))
+    for package in (updates.get('launcher') or {}).get('platforms', {}).values():
+        if package['entryPoint'] in ('bb-replanted.sh', 'bb-replanted.exe', 'bb-replanted.command') or urlsplit(package['url']).path.endswith('-setup.zip'):
+            raise ValueError('launcher-updates.json requires flat launcher updates, not setup ZIPs')
+    downloads = launcher_downloads(site, updates, source['repository'], verify=False)
+    if source['manifest'] == 'launcher-downloads.json' and downloads is None:
+        raise ValueError('Selected launcher-downloads.json is missing')
+    names = ('launcher-updates-v3.json', 'launcher-downloads-v3.json')
+    present = [(site / name).is_file() for name in names]
+    if not any(present):
+        return {}
+    if not all(present):
+        raise ValueError('Both edition catalogs must be provided together')
+    editions = {name: read_manifest(site, name) for name in names}
+    entries = {name: list(edition_entries(value)) for name, value in editions.items()}
+    left, right = (editions[name] for name in names)
+    if {key: value for key, value in left.items() if key != 'launcher'} != {key: value for key, value in right.items() if key != 'launcher'}:
+        raise ValueError('Edition setup/update catalogs disagree outside the launcher')
+    for name, compatibility in zip(names, (updates, downloads)):
+        catalog = editions[name]
+        if compatibility is None or core_release(catalog['launcher']) != compatibility.get('launcher'):
+            raise ValueError(name + ': launcher payload disagrees with compatibility source')
+        if core_release(catalog['games'].get('legacy', {})) != updates.get('game'):
+            raise ValueError(name + ': Legacy payload disagrees with compatibility source')
+    return entries
 
 
 def build(site, output, repository, offline=False, token=None):
@@ -310,6 +399,7 @@ def build(site, output, repository, offline=False, token=None):
         raise ValueError('release.json needs the matching repository and a boolean published flag')
     if source.get('manifest') == 'launcher-downloads.json' and not (site / 'launcher-downloads.json').is_file():
         raise ValueError('Selected launcher-downloads.json is missing')
+    edition_assets = check_sources(site) if configured else {}
     manifest, tag = None, None
     downloads = None
     manifest_name = 'launcher-updates.json' if configured else 'updates.json'
@@ -322,6 +412,8 @@ def build(site, output, repository, offline=False, token=None):
             manifest = parse((site / manifest_name).read_bytes())
             verify_configured_manifest(repository, manifest, token)
             downloads = launcher_downloads(site, manifest, repository, token)
+            for entries in edition_assets.values():
+                verify_assets(repository, entries, token)
             versions = [manifest[component]['version'] for component in ('launcher', 'game') if manifest.get(component)]
             tag = ' / '.join(versions)
         else:
@@ -362,10 +454,15 @@ def main():
     page.add_argument('--output', type=Path, default=ROOT / 'dist')
     page.add_argument('--repository', default=os.environ.get('GITHUB_REPOSITORY', 'Naroci/BeastsAndBumpkinsReplanted'))
     page.add_argument('--offline', action='store_true')
+    check = commands.add_parser('check', help='Check source JSON and setup/update/edition roles without network access')
+    check.add_argument('--site', type=Path, default=ROOT / 'site')
     args = parser.parse_args()
     if args.command == 'prepare':
         prepare(args.manifest, args.archives, args.output, args.repository, args.tag)
         print(f'Validated release bundle: {args.output} (not uploaded)')
+    elif args.command == 'check':
+        check_sources(args.site)
+        print('Source manifest JSON, payload roles and edition consistency checked')
     else:
         build(args.site, args.output, args.repository, args.offline, os.environ.get('GITHUB_TOKEN'))
         print(f'Pages artifact: {args.output}')

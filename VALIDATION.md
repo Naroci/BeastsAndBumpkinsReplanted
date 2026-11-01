@@ -1,5 +1,37 @@
 # Lokale Abnahme
 
+## PUB1-EDN1 · Pages nach Enhanced-Veröffentlichung · 01.11.2026
+
+Der öffentliche Lauf 41306661352 scheitert vor dem Deployment an den
+Paketprüfungen. Lokal reproduziert: 15 Fehler in 36 Tests, verursacht durch
+fehlendes JSON-Komma in `launcher-updates.json`. Zusätzlich enthielt diese
+Datei Setup-ZIPs statt flacher Launcherupdates; der alte Builder lehnte den
+neuen vollständigen Setup-/Legacy-/Datenkatalog ab. Auch die v3-Update-Datei
+enthielt irrtümlich Setup-Payloads.
+
+Die beiden Updatekataloge sind aus den tatsächlich veröffentlichten flachen
+Paketen und ihren geprüften lokalen Paketmetadaten korrigiert. Versionen,
+Legacy-/Enhancedangebote, Daten und feste Legacyreferenz bleiben erhalten.
+Setup-Dateien bleiben unverändert. Kein nativer Legacy-/Spiel-/Launchercode
+und kein Webseitenlayout geändert.
+
+`python3 scripts/distribution.py check` prüft nun Dateisyntax mit Dateiname,
+Payloadrollen und die alte/v3-Katalogzuordnung ohne Netzwerk. Der Workflow
+führt dies zuerst aus. Der Builder akzeptiert vollständige generierte
+Setupkataloge, verweigert widersprüchliche Spiel-/Datenangaben und prüft
+zusätzlich alle v3-Programm-/Datenassets über die öffentliche GitHub-API.
+Die v3-Dateien werden bytegleich ausgeliefert. Dies ist eine Seiten-/Asset-
+Konsistenzprüfung, keine vollständige Neuimplementierung des nativen v3-Parsers.
+
+46 Python-Prüfungen, bestehender Fünfsprachen-Frontendtest und realer Pages-
+Build bestanden. Ergebnis: Launcher 0.5.0 / Legacy 0.1.8; getrennte v3-Quellen
+enthalten Enhanced 0.1.1. macOS bleibt ausgeblendet. Das unveränderte Frontend
+zeigt weiterhin Legacy; eigene sichtbare Editionsauswahl bleibt EDN-6.2.
+Keine neue Bild-/Original- oder echte native Installationsabnahme aus dieser
+Manifestreparatur. Kein Browser-FPS-Nachweis; der bestehende isolierte
+Handler-/Ereignislasttest besteht weiterhin. Push/Deployment dieses Pakets
+sind nicht Bestandteil der lokalen Abnahme.
+
 ## PUB1-DL3 · launcher-downloads.json als Webseitenquelle · 24.10.2026
 
 `site/release.json` wählt ausdrücklich `launcher-downloads.json`. Deren beide

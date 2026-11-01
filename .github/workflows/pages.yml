@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
+      - name: Check source manifest JSON and catalog roles
+        run: python3 scripts/distribution.py check
       - name: Check distribution integrity and failure paths
         run: python3 -m unittest discover -s tests -v
       - name: Check platform selection and download states

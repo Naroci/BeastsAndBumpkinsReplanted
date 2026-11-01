@@ -113,27 +113,27 @@
     "platforms": {
       "linux-x64": {
         "runtime": "linux-x64",
-        "packageId": "launcher-linux-x64-0.5.0-97b147cb2b6e44a5",
+        "packageId": "launcher-linux-x64-0.5.0-9b536684a8eacb35",
         "buildId": "gfe53e26adc",
-        "entryPoint": "bb-replanted.sh",
+        "entryPoint": "replanted-launcher",
         "optionsContract": 0,
         "dataIds": [],
         "capabilities": [],
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-linux-x64-0.5.0-20261101-120441-8b9058ae-setup.zip",
-        "size": 54441568,
-        "sha256": "7009ccf5003b6965bf64c938c69f607d8513f0bdf93cb206414f78feda030a2f"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-linux-x64-0.5.0-20261101-120441-8b9058ae.zip",
+        "size": 53068740,
+        "sha256": "f5eac91359ca41527165bd399d319f4fcd4a7b042b41f8ba9685a84ee1a15952"
       },
       "win-x64": {
         "runtime": "win-x64",
-        "packageId": "launcher-win-x64-0.5.0-b791877f68699c51",
+        "packageId": "launcher-win-x64-0.5.0-7120e48c29c71954",
         "buildId": "gfe53e26adc",
-        "entryPoint": "bb-replanted.exe",
+        "entryPoint": "replanted-launcher.exe",
         "optionsContract": 0,
         "dataIds": [],
         "capabilities": [],
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-win-x64-0.5.0-20261101-120824-49cf9990-setup.zip",
-        "size": 79401272,
-        "sha256": "c5d7da7f88b51049ae9e6cd278102ecd7cbbdf8459334a96c4be8b918666004a"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-win-x64-0.5.0-20261101-120824-49cf9990.zip",
+        "size": 79116508,
+        "sha256": "2ea8534ab4c038d22a9c64107a27ea8d07a599dbbea47940f781fcd9b55a9da8"
       }
     }
   }

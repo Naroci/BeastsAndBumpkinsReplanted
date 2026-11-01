@@ -196,6 +196,42 @@ Die vorhandene Datei und ihre URLs werden beim Webseitenbuild nicht umgeschriebe
 Bei freigeschalteten Downloads liefert der Build zusätzlich `updates.json`
 als inhaltsgleiche Manifestkopie für ältere konfigurierte Adressen aus.
 
+## Enhanced-Releases und Pages-Fehler prüfen
+
+Die alten Quellen bleiben Schema 2: `launcher-updates.json` enthält flache
+Launcherupdates, Legacy unter `game` und gemeinsame `gameData`.
+`launcher-downloads.json` enthält die passenden Launcher-Setup-ZIPs und darf
+zusätzlich dieselben Legacy-/Datenangaben enthalten. Diese Angaben müssen mit
+der Update-Datei übereinstimmen. Ein `*-setup.zip` gehört ausschließlich in
+den Downloadkatalog; sein Root-Starter ist kein flaches Launcherupdate.
+
+Für Enhanced die beiden zusätzlichen erzeugten Dateien gemeinsam übernehmen:
+`launcher-updates-v3.json` mit flachen Launcherpaketen sowie
+`launcher-downloads-v3.json` mit Setup-ZIPs. Beide behalten dieselben
+`games.legacy`-/`games.enhanced`-, Daten- und Legacyreferenzen. Enhanced niemals
+in das alte `game`-Feld eintragen. Die bestehende Webseite zeigt weiterhin den
+Launcher und den Legacyclient; die v3-Dateien werden als getrennte Quellen
+für den editionsfähigen Launcher veröffentlicht.
+
+Vor dem Commit im Website-Repository ausführen:
+
+```bash
+python3 scripts/distribution.py check
+python3 -m unittest discover -s tests -v
+node tests/frontend.mjs
+```
+
+`check` benötigt kein Netzwerk. Es nennt fehlerhafte JSON-Dateien und prüft
+Setup-/Update-Zuordnung sowie die Übereinstimmung der alten und neuen Kataloge.
+Der anschließende Pages-Build prüft auch die Enhanced- und Datenassets gegen
+GitHub. Die vollständige native Schema-/Installationsprüfung bleibt beim
+Launcher und den Releasewerkzeugen; diese Seitenprüfung ersetzt sie nicht.
+
+Ein fehlgeschlagener Workflow veröffentlicht keine neue Seite. Deshalb zuerst
+den ersten roten Schritt unter **Actions → Project website and launcher manifest**
+prüfen; ein Neuladen des Browsers ersetzt kein erfolgreiches Deployment.
+Die Quelle `site/` bearbeiten, nicht eine bereits erzeugte Pages-Ausgabedatei.
+
 ## Älterer Bereitstellungsweg
 
 `scripts/distribution.py prepare` bleibt für bestehende **Schema-1**-Bundles

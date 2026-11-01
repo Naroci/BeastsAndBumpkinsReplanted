@@ -25,6 +25,8 @@ class DistributionTests(unittest.TestCase):
         shutil.copytree(d.ROOT / 'site', self.site)
         # Configured-download tests explicitly add their own setup inventory.
         (self.site / 'launcher-downloads.json').unlink(missing_ok=True)
+        for name in ('launcher-updates-v3.json', 'launcher-downloads-v3.json'):
+            (self.site / name).unlink(missing_ok=True)
         d.write_json(self.site / 'release.json', {'repository':'Naroci/BeastsAndBumpkinsReplanted','published':False,'tag':None,'manifest':None})
         self.archive = self.root / 'launcher-linux-x64-0.2.0.zip'
         self.zip({'replanted-launcher': b'fixture executable', 'licenses/NOTICE.txt': b'fixture notice'})
@@ -289,6 +291,107 @@ class DistributionTests(unittest.TestCase):
         self.starter_downloads(entry='replanted-launcher')
         with patch.object(d, 'fetch', side_effect=self.configured_fetch):
             with self.assertRaisesRegex(ValueError, 'root starter'):
+                d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        self.assertFalse((self.root / 'dist').exists())
+
+    def test_complete_generated_setup_catalog_is_accepted(self):
+        downloads = self.starter_downloads()
+        downloads.update({key:self.configured_manifest[key] for key in ('game', 'gameData')})
+        d.write_json(self.site / 'launcher-downloads.json', downloads)
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        self.assertEqual(json.loads((self.root / 'dist/launcher-downloads.json').read_text()), downloads)
+
+    def test_complete_setup_catalog_cannot_replace_game_or_data(self):
+        for component in ('game', 'gameData'):
+            downloads = self.starter_downloads()
+            downloads[component] = copy.deepcopy(self.configured_manifest[component])
+            downloads[component]['version'] = '99.0.0'
+            d.write_json(self.site / 'launcher-downloads.json', downloads)
+            with patch.object(d, 'fetch', side_effect=AssertionError('Unexpected network access')):
+                with self.assertRaisesRegex(ValueError, 'disagrees with updates: ' + component):
+                    d.check_sources(self.site)
+
+    def test_preflight_names_the_malformed_source_file(self):
+        self.configured()
+        (self.site / 'launcher-updates.json').write_text('{"schemaVersion":2 "launcher":{}}')
+        with self.assertRaisesRegex(ValueError, 'launcher-updates.json:.*delimiter'):
+            d.check_sources(self.site)
+
+    def test_preflight_rejects_setup_payloads_in_the_update_source(self):
+        downloads = self.starter_downloads()
+        self.configured_manifest['launcher'] = downloads['launcher']
+        d.write_json(self.site / 'launcher-updates.json', self.configured_manifest)
+        with self.assertRaisesRegex(ValueError, 'requires flat launcher updates'):
+            d.check_sources(self.site)
+
+    def edition_catalogs(self):
+        self.starter_downloads()
+        updates = json.loads((d.ROOT / 'site/launcher-updates-v3.json').read_text())
+        downloads = copy.deepcopy(updates)
+        setup = json.loads((self.site / 'launcher-downloads.json').read_text())
+        for catalog, core in ((updates, self.configured_manifest['launcher']), (downloads, setup['launcher'])):
+            catalog['launcher']['version'] = core['version']
+            catalog['launcher']['platforms'] = {
+                runtime: {**catalog['launcher']['platforms'][runtime], **package}
+                for runtime, package in core['platforms'].items()}
+        for name, catalog in (('launcher-updates-v3.json', updates), ('launcher-downloads-v3.json', downloads)):
+            d.write_json(self.site / name, catalog)
+            for _, _, package in d.edition_entries(catalog):
+                tag, filename = d.release_asset('Naroci/BeastsAndBumpkinsReplanted', package)
+                url = f'https://api.github.com/repos/Naroci/BeastsAndBumpkinsReplanted/releases/tags/{tag}'
+                release = self.responses.setdefault(url, {'tag_name':tag,'draft':False,'prerelease':False,'assets':[]})
+                if not any(asset['name'] == filename for asset in release['assets']):
+                    release['assets'].append({'name':filename,'browser_download_url':package['url'],'size':package['size'],'state':'uploaded','digest':'sha256:'+package['sha256']})
+        return updates, downloads
+
+    def test_edition_catalogs_are_verified_and_published_without_rewriting(self):
+        updates, downloads = self.edition_catalogs()
+        originals = {name:(self.site / name).read_bytes() for name in ('launcher-updates-v3.json', 'launcher-downloads-v3.json')}
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
+        for name, original in originals.items():
+            self.assertEqual((self.site / name).read_bytes(), original)
+            self.assertEqual((self.root / 'dist' / name).read_bytes(), original)
+        self.assertEqual(json.loads((self.root / 'dist/updates.json').read_text()), self.configured_manifest)
+        self.assertIn('enhanced', updates['games'])
+        self.assertEqual(updates['legacyBaseline'], downloads['legacyBaseline'])
+
+    def test_edition_catalog_pair_must_be_complete(self):
+        self.edition_catalogs()
+        (self.site / 'launcher-downloads-v3.json').unlink()
+        with self.assertRaisesRegex(ValueError, 'provided together'):
+            d.check_sources(self.site)
+
+    def test_edition_update_catalog_cannot_use_setup_launcher(self):
+        updates, downloads = self.edition_catalogs()
+        updates['launcher'] = downloads['launcher']
+        d.write_json(self.site / 'launcher-updates-v3.json', updates)
+        with self.assertRaisesRegex(ValueError, 'launcher payload disagrees'):
+            d.check_sources(self.site)
+
+    def test_edition_catalog_requires_known_data_references(self):
+        updates, _ = self.edition_catalogs()
+        updates['games']['enhanced']['platforms']['linux-x64']['dataIds'] = ['missing-base']
+        d.write_json(self.site / 'launcher-updates-v3.json', updates)
+        with self.assertRaisesRegex(ValueError, 'data reference'):
+            d.check_sources(self.site)
+
+    def test_edition_catalog_cannot_change_the_frozen_legacy_reference(self):
+        updates, _ = self.edition_catalogs()
+        updates['legacyBaseline']['sourceCommit'] = 'a' * 40
+        d.write_json(self.site / 'launcher-updates-v3.json', updates)
+        with self.assertRaisesRegex(ValueError, 'frozen Legacy reference'):
+            d.check_sources(self.site)
+
+    def test_missing_enhanced_release_asset_blocks_deployment(self):
+        updates, _ = self.edition_catalogs()
+        package = updates['games']['enhanced']['platforms']['linux-x64']
+        tag, filename = d.release_asset('Naroci/BeastsAndBumpkinsReplanted', package)
+        release = self.responses[f'https://api.github.com/repos/Naroci/BeastsAndBumpkinsReplanted/releases/tags/{tag}']
+        release['assets'] = [asset for asset in release['assets'] if asset['name'] != filename]
+        with patch.object(d, 'fetch', side_effect=self.configured_fetch):
+            with self.assertRaisesRegex(ValueError, 'missing or size mismatch'):
                 d.build(self.site, self.root / 'dist', 'Naroci/BeastsAndBumpkinsReplanted')
         self.assertFalse((self.root / 'dist').exists())
 
