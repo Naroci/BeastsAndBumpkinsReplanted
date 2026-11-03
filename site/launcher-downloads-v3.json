@@ -4,71 +4,71 @@
   "games": {
     "legacy": {
       "version": "0.1.8",
-      "sourceCommit": "2907128e1efddbae6c43facd5e50ecc49dd8eb14",
+      "sourceCommit": "4398e131e9f81ea3ba6e103dfe49bf911255cf62",
       "platforms": {
         "linux-x64": {
           "runtime": "linux-x64",
-          "packageId": "legacy-linux-x64-0.1.8-976bae13434bcf0c",
-          "buildId": "g2907128e1e",
+          "packageId": "legacy-linux-x64-0.1.8-ec503c7f68241c0d",
+          "buildId": "g4398e131e9",
           "entryPoint": "bin/bbgame",
           "optionsContract": 0,
           "dataIds": [
             "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
           ],
           "capabilities": [],
-          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-game-legacy-linux-x64-0.1.8-976bae13434bcf0c-b9d4bef25de76c42.zip",
-          "size": 5586019,
-          "sha256": "7f5ae4b7847f5144920efe918b6922db0159fc8df71129be7a793062ac0b7b0c"
+          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-legacy-linux-x64-0.1.8-ec503c7f68241c0d-fd24960f729b3103.zip",
+          "size": 5586016,
+          "sha256": "61019c295e6bb4b57e9c5bbcc39269d8063c89abfce2e6422471563a4fb7c6b5"
         },
         "win-x64": {
           "runtime": "win-x64",
-          "packageId": "legacy-win-x64-0.1.8-7079cb753d82f69b",
-          "buildId": "g2907128e1e",
+          "packageId": "legacy-win-x64-0.1.8-d7d209ff23089033",
+          "buildId": "g4398e131e9",
           "entryPoint": "bin/bbgame.exe",
           "optionsContract": 0,
           "dataIds": [
             "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
           ],
           "capabilities": [],
-          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-game-legacy-win-x64-0.1.8-7079cb753d82f69b-c3a5a01c2b7a38bc.zip",
-          "size": 13761648,
-          "sha256": "94e09f6275376e202e0db862ca4ade9d36cd4fbe2135713a2e82118d5c370f7d"
+          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-legacy-win-x64-0.1.8-d7d209ff23089033-d7681d7cbbc37916.zip",
+          "size": 13761646,
+          "sha256": "5dcc0d3ffe772261cd9d559b2e483772537ddf27b4163c5267303938c7befec0"
         }
       },
       "editionId": "legacy",
       "behaviorProfile": "LEGACY-20261101"
     },
     "enhanced": {
-      "version": "0.1.2",
-      "sourceCommit": "2907128e1efddbae6c43facd5e50ecc49dd8eb14",
+      "version": "0.1.4",
+      "sourceCommit": "4398e131e9f81ea3ba6e103dfe49bf911255cf62",
       "platforms": {
         "linux-x64": {
           "runtime": "linux-x64",
-          "packageId": "enhanced-linux-x64-0.1.2-caae8a616ec5f889",
-          "buildId": "g2907128e1e",
+          "packageId": "enhanced-linux-x64-0.1.4-1ca880604f978231",
+          "buildId": "g4398e131e9",
           "entryPoint": "bin/bbgame-enhanced",
           "optionsContract": 0,
           "dataIds": [
             "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
           ],
           "capabilities": [],
-          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-game-enhanced-linux-x64-0.1.2-caae8a616ec5f889-aed515e36204c5d4.zip",
-          "size": 6433665,
-          "sha256": "591cb242cc51faba729cfed675fd7edf44ec91b84be044a96f059663c2a6b1fd"
+          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-enhanced-linux-x64-0.1.4-1ca880604f978231-1bc042cd6851eb73.zip",
+          "size": 10571630,
+          "sha256": "c254ff83c66351e7a409738fa6023ffff1cd136307a65f7ded8c7d60c782cc34"
         },
         "win-x64": {
           "runtime": "win-x64",
-          "packageId": "enhanced-win-x64-0.1.2-eb477fb2fe0abad3",
-          "buildId": "g2907128e1e",
+          "packageId": "enhanced-win-x64-0.1.4-4d5ab1fe4c12a1b5",
+          "buildId": "g4398e131e9",
           "entryPoint": "bin/bbgame-enhanced.exe",
           "optionsContract": 0,
           "dataIds": [
             "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
           ],
           "capabilities": [],
-          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-game-enhanced-win-x64-0.1.2-eb477fb2fe0abad3-f08efe90feb5580f.zip",
-          "size": 14607023,
-          "sha256": "be233cfd238817a9339c9be1d943a99d5ddc7003131ba6971fc9f424c203ba38"
+          "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-game-enhanced-win-x64-0.1.4-4d5ab1fe4c12a1b5-bede662083dcbb3e.zip",
+          "size": 16145209,
+          "sha256": "5625b12c3b6ba7354321e45213d2c34ce0ecb82cf5173a3b011c89812b888dca"
         }
       },
       "editionId": "enhanced",
@@ -92,15 +92,15 @@
     "sourceCommit": "05a508a43de1f71dd276d2d1fc71439e267974f0",
     "platforms": {
       "linux-x64": {
-        "packageId": "baseline-legacy-linux-x64-0.1.1-b0d5642aa77a1a4c",
-        "sha256": "a5a07d565c9d66b8b14e0919a1c472a4d6520838546a93a3c4a4b85e189a2d57",
+        "packageId": "baseline-legacy-linux-x64-0.1.1-7402f1f7ac80baf7",
+        "sha256": "20eefa3389b4087e654f76135c12df119179616aa76b6b5d5f0d972593f1578a",
         "dataIds": [
           "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
         ]
       },
       "win-x64": {
-        "packageId": "baseline-legacy-win-x64-0.1.1-2404fe705ad9df1f",
-        "sha256": "a16d70f58feb6ff9a09dcadde6e17da34b0d3a9682590e01c271ede2bac4905d",
+        "packageId": "baseline-legacy-win-x64-0.1.1-7d30ce15a2a694a2",
+        "sha256": "4318c8d669a940f6a49fab92dcd08ede67b462dedf167a377c74af61184d0afb",
         "dataIds": [
           "base-dbeb44348a2f33a774314c420e635e8349a737074b78018b59e7f3130312b0d2"
         ]
@@ -108,32 +108,32 @@
     }
   },
   "launcher": {
-    "version": "0.5.2",
-    "sourceCommit": "2907128e1efddbae6c43facd5e50ecc49dd8eb14",
+    "version": "0.5.3",
+    "sourceCommit": "4398e131e9f81ea3ba6e103dfe49bf911255cf62",
     "platforms": {
       "linux-x64": {
         "runtime": "linux-x64",
-        "packageId": "launcher-linux-x64-0.5.2-224a2d883526198e",
-        "buildId": "g2907128e1e",
+        "packageId": "launcher-linux-x64-0.5.3-1c33369d78f56fb5",
+        "buildId": "g4398e131e9",
         "entryPoint": "bb-replanted.sh",
         "optionsContract": 0,
         "dataIds": [],
         "capabilities": [],
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-launcher-linux-x64-0.5.2-20261102-093327-13dc01a9-setup.zip",
-        "size": 54462824,
-        "sha256": "71d43b2b6f46c472418cd9bca8aab4a93bf1d16181da6f5a9ffad85ae6d3d060"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-linux-x64-0.5.3-20261103-143718-5a5b708a-setup.zip",
+        "size": 54462993,
+        "sha256": "1820257a579a3e067bb8b0ea93d05bb13bc24b7aaf86e534cf9de7de31d36aec"
       },
       "win-x64": {
         "runtime": "win-x64",
-        "packageId": "launcher-win-x64-0.5.2-f81b88c231c3f01e",
-        "buildId": "g2907128e1e",
+        "packageId": "launcher-win-x64-0.5.3-66eb7508d046398d",
+        "buildId": "g4398e131e9",
         "entryPoint": "bb-replanted.exe",
         "optionsContract": 0,
         "dataIds": [],
         "capabilities": [],
-        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v02112026/replanted-launcher-win-x64-0.5.2-20261102-093713-60031961-setup.zip",
-        "size": 79422564,
-        "sha256": "5940f84c903524db46f1de2fd786a2fb8b836174737de7e48eaca7007a05fdd3"
+        "url": "https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/replanted-launcher-win-x64-0.5.3-20261103-144102-1eb2eaec-setup.zip",
+        "size": 79422732,
+        "sha256": "52a29cc27b5d984a193558608c6fc50cb9fceefc49d0cb5a1c492981149fd78c"
       }
     }
   }
