@@ -247,3 +247,41 @@ Webseitenstil; Spiel-/HUD-/Rendererquellen und Binärpakete bleiben unverändert
 Die Bedienbefehle wurden mit dem gepackten Startskript und die Dolphin-Kurzbefehle
 mit dem offiziellen Handbuch abgeglichen. Ein neuer Windows-Gerätetest und eine
 vollständige Spielabnahme sind nicht Bestandteil dieser Veröffentlichung.
+
+## ED-HANDBUCH-20261118 · Aktuelle Bilder und vollständige Bedienanleitung
+
+Editorseite mit 17 verlinkten Funktionsbereichen, zwölf am 18.11.2026 neu
+aufgenommenen Bildern, SVG-Klickmarkierungen, Bildvergrößerung, allen
+Tastenkürzeln, Windows-/Linux-Startwegen und Fehlerhilfe. Die UI-Bilder stammen
+aus dem aktuellen Editor 0.1.0; F5 zeigt Enhanced 0.1.5. Keine KI-/Mockupbilder.
+Die Bitmapinhalte sind bei der verlustfreien WebP-Konvertierung bytegleich;
+Markierungen bleiben eine eigene Vektorebene. Quelle und Abmessungen: ASSETS.md.
+
+Alle Rohansichten und ausgewählte vollständig annotierte Kapitel wurden
+visuell geprüft. Desktop und 390-Pixel-Ansicht, Kontrollkästchen für die
+1200-Pixel-Detailansicht, Kartenlegenden, Dialogmarkierungen und responsive
+Feature-Liste geprüft. Auf Mobile 375 Pixel Inhalt = 375 Pixel Seitenbreite;
+nur das ausdrücklich vergrößerte Bild scrollt intern auf 1200 Pixel.
+
+121 lokale Links/Ressourcen/Anker und eindeutige IDs geprüft. 46 bestehende
+Python-Distributionstests, fünfsprachiger Frontendtest mit 99 Schlüsseln und
+echter Pages-Build gegen die veröffentlichten GitHub-Katalogassets bestanden.
+Neue Newsrevision editor-20261118-2 besteht den strikten Quellparser. Legacy-
+Nachrichten, vier Spiel-/Launcherkataloge und abgeschlossenes Releasejournal
+bleiben bytegleich. Das Windows-Editorasset unter `vEditorWin01` ist vor dem Push gegen die
+GitHub-API bestätigt: 72.549.630 Bytes, SHA-256
+`cac8489feecbb270cf306960c56a37ad5896fdc71a1246eeaccb1eba72a33911`.
+Publishing-/Deploymentstatus wird nach dem Push im Quellprojekt dokumentiert.
+
+Keine neuen Skript-Handler im Handbuch: Vergrößerung per Checkbox/CSS,
+Klickmarkierungen rein deklarativ. Bestehende Frontendlasttestwerte stehen im
+Quellprojekt-Nachweis; keine Kopplung an Spiel-RNG, Audio oder Renderer.
+Windows-Editorarchive sind unter Wine einschließlich F5 geprüft, keine neue
+Abnahme auf einem physischen Windows-PC. Keine zusätzliche vollständige
+Editor-, HUD- oder Missionsabnahme.
+
+Bestehender Frontend-Handlerlasttest (Node-CPU, keine Browser-FPS), ms
+p50/p95/p99/Maximum: Einzelaktionen 0,00313/0,00563/0,01419/0,48324;
+64er-Stapel 0,507949/0,74926/0,93201/2,502859; Sprachwechsel
+0,02575/0,04836/0,0856/0,21555. Weiterhin genau zwei initiale Kataloganfragen,
+keine zusätzlichen Auswahlabfragen.

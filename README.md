@@ -326,3 +326,19 @@ Edition abschaltbar. Bei einer eigenen Updatequelle wird deren gleichnamiges
 News-Sidecar verwendet. Die Redaktionstexte dieses Feeds sind deutsch; die
 Startseite bietet weiterhin alle fünf Sprachen mit gekennzeichneten deutschen
 Artikellinks.
+
+### Editorhandbuch und Windows-Testclient
+
+`site/editor.html` ist das vollständige Handbuch. `editor-handbook.css` enthält
+nur dessen Layout und nummerierte Bildmarkierungen. Screenshots immer aus
+dem aktuellen Editor erzeugen; Quellexport `Replanted.Editor.Tests …
+--manual-captures` im Entwicklungsrepository. Aktuelle Herkunft: ASSETS.md.
+Bei Bildwechsel neue Dateinamen mit Datum/Inhaltshash verwenden, damit keine
+alten Browsercachebilder neben neuen Klickmarkierungen erscheinen.
+
+Windows-Download und separate Startanleitung/Editor-Patchnotes werden hier
+gepflegt; sie erfordern keine Änderung der Spiel-/Launcherkataloge. Vor
+Veröffentlichung des Downloadlinks GitHub-Assetgröße und SHA-256 gegen das
+übergebene ZIP prüfen. Den Enhanced-Newsbeitrag samt Revision aktualisieren,
+damit der vorhandene Launcher die Ankündigung laden kann. Historische
+abgeschlossene Releasejournale nicht nachträglich ändern.

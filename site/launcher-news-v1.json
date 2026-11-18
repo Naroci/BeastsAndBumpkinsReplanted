@@ -1,7 +1,7 @@
 {
   "format": "replanted-launcher-news",
   "schemaVersion": 1,
-  "revision": "release-20261118-1",
+  "revision": "editor-20261118-2",
   "games": {
     "legacy": {
       "htmlUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#legacy",
@@ -20,6 +20,13 @@
       "htmlUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#enhanced",
       "patchNotesUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#enhanced",
       "items": [
+        {
+          "id": "editor-windows-handbook-20261118",
+          "title": "Missionseditor: Windows-Testclient und bebildertes Handbuch",
+          "publishedAt": "2026-11-18T19:45:00Z",
+          "summary": "Editor 0.1.0 jetzt für Windows x64 und Linux x64. Das vollständige Handbuch zeigt alle 17 Funktionsbereiche mit zwölf aktuellen Screenshots und nummerierten Klickmarkierungen. Die bestehenden Spiel- und Launcherpakete bleiben gültig.",
+          "url": "https://naroci.github.io/BeastsAndBumpkinsReplanted/editor.html"
+        },
         {
           "id": "enhanced-0.1.5",
           "title": "Enhanced 0.1.5: LAN und CPU-Duell",

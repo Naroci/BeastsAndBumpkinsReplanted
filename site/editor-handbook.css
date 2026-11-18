@@ -1,0 +1,26 @@
+/* Authentic current screenshots; numbered guidance is a separate vector overlay. */
+.editor-handbook section { scroll-margin-top: 2rem; }
+.editor-handbook .guide-nav { gap: .5rem; }
+.editor-handbook .guide-nav a { padding: .45rem .7rem; }
+.table-scroll { overflow-x: auto; margin: 1.5rem 0; }
+.feature-table { width: 100%; border-collapse: collapse; text-align: left; font-size: .94rem; }
+.feature-table th,.feature-table td { padding: .8rem; border-bottom: 1px solid #70563a; vertical-align: top; }
+.feature-table thead { background: #33271b; color: #f5da9b; }
+.feature-table th[scope=row] { width: 27%; }
+.feature-table a { color: #f4d79a; }
+.editor-shot .shot-toggle { display: flex; align-items: center; gap: .5rem; padding: .7rem 1rem; color: #f4d79a; font-size: .9rem; cursor: pointer; background: #281e15; }
+.shot-toggle input { width: 1.1rem; height: 1.1rem; accent-color: #ae7d35; }
+.shot-viewport { overflow: auto; background: #16110d; }
+.marked-shot { width: 100%; position: relative; margin: 0 auto; }
+.editor-shot:has(input:checked) .marked-shot { width: var(--shot-width); max-width: none !important; }
+.editor-shot .marked-shot img { display: block; width: 100%; height: auto; }
+.marked-shot svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+.marked-shot svg path { fill: none; stroke: #ffe3a0; stroke-width: 3; filter: drop-shadow(0 1px 2px #000); }
+.marked-shot svg circle { fill: #ffdf91; stroke: #24180d; stroke-width: 3; }
+.marked-shot svg .target { fill: #ffe3a0; stroke: #24180d; stroke-width: 1.5; }
+.marked-shot svg text { fill: #20160d; font: bold 19px system-ui,sans-serif; text-anchor: middle; }
+.shot-legend { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem 2rem; margin: 1rem 0; padding-left: 1.5rem; color: #eddfc7; }
+.shot-legend li::marker { font-weight: 800; color: #ffdf91; }
+.editor-handbook h2 { overflow-wrap: anywhere; }
+@media(max-width:650px) { .shot-legend { grid-template-columns: 1fr; } .feature-table { min-width: 0; } #features .feature-table, #features .feature-table tbody, #features .feature-table tr, #features .feature-table th, #features .feature-table td { display: block; width: auto; } #features .feature-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } #features .feature-table tr { border-bottom: 1px solid #70563a; padding: .8rem 0; } #features .feature-table th, #features .feature-table td { border: 0; padding: .3rem .5rem; } #features .feature-table td:last-child { color: #f4d79a; } #features .feature-table td:last-child::before { content: "Bedienung: "; font-weight: 600; } .editor-shot .shot-toggle { font-size: .85rem; } }
+@media print { .site-header,.site-footer,.shot-toggle,.guide-nav { display: none; } .editor-handbook details { display: block; } .marked-shot { width: 100% !important; } .editor-shot { break-inside: avoid; } }

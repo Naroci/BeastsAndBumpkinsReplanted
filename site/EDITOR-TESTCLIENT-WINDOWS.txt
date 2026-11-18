@@ -1,0 +1,80 @@
+Beasts & Bumpkins: Replanted - Missionseditor
+Windows-x64-Testclient 0.1.0 - 18.11.2026
+
+VORAUSSETZUNGEN
+
+Ein Windows-PC mit Intel-/AMD-64-Bit-Prozessor. Das Editorpaket enthaelt
+seine .NET-Laufzeit und Enhanced 0.1.5 fuer die F5-Spielprobe.
+Die vorhandenen Spieldaten 1.0.0 werden zusaetzlich benoetigt.
+Ein installiertes Linux- oder Windows-Spiel kann denselben Datenbestand
+bereitstellen. Der Editor wird in einen eigenen Ordner entpackt.
+
+START - SCHRITT FUER SCHRITT
+
+1. Das Editor-ZIP herunterladen. Im Explorer Rechtsklick auf das ZIP,
+   dann "Alle extrahieren". Den gesamten Inhalt entpacken.
+2. Den entpackten Ordner replanted-editor-test-win-x64 oeffnen.
+   Start-Editor.cmd, replanted-editor.exe und enhanced muessen dort liegen.
+3. Den Spieldatenordner bereitlegen. Er muss assets und recovered enthalten:
+
+   data\assets\missions\m1.mis
+   data\recovered\palettes\titlepalette.rgb
+
+   Nach dem Entpacken des Game-Data-ZIPs ist dies dessen Unterordner data.
+   Bei einer bestehenden Installation hilft der Datenpfad im Launcher.
+4. Start-Editor.cmd doppelt anklicken. Ein kleines Konsolenfenster fragt
+   nach dem Datenordner. Den data-Ordner aus dem Explorer in dieses Fenster
+   ziehen und Enter druecken. Alternativ den vollstaendigen Pfad eingeben.
+5. Der Editor oeffnet Mission 3. Die Konsole waehrend der Arbeit offen lassen.
+   Alle Dateien und Unterordner des Editorpakets zusammen behalten.
+
+Auch moeglich: Den data-Ordner direkt auf Start-Editor.cmd ziehen.
+In einer Eingabeaufforderung kann zusaetzlich eine eigene Mission angegeben werden:
+
+   Start-Editor.cmd "C:\Spiele\Replanted\data" "C:\Meine Karten\Dorf.mis"
+
+Diese Pfade sind Beispiele; eigene vorhandene Pfade einsetzen.
+Administratorrechte und eine separate .NET-Installation sind nicht erforderlich.
+
+ERSTE KARTE
+
+- Vorlagen...: eine der 30 Kampagnenmissionen auswaehlen.
+- Karte: Terrain-, Hoehen- oder Strassenpinsel waehlen und mit links malen.
+- Objekt setzen: Baum, Getreide, Huhn oder Brunnen sowie Besitzer waehlen.
+- Objekt verschieben: sichtbares Objekt greifen und zum Zielfeld ziehen.
+- Spieler: Spieler waehlen, Startgold eingeben, Wert uebernehmen anklicken.
+- Objekte: vorhandenen Vorrat waehlen, Wert eingeben, Wert uebernehmen.
+- Skripte: vorhandene unterstuetzte Belohnung waehlen und Wert uebernehmen.
+- Strg+Z: rueckgaengig. Strg+Umschalt+Z oder Strg+Y: wiederholen.
+- Esc: laufende Mausgeste abbrechen.
+- F5: ungespeicherte Karte im separaten Enhanced-Spiel ausprobieren.
+  Im Editor erneut F5 druecken oder das Spielfenster schliessen beendet die Probe.
+- Speichern unter...: eigene .mis im Dokumenteordner anlegen.
+  Danach speichert Strg+S diese eigene Datei. F5 allein speichert sie nicht.
+
+Das bebilderte Handbuch mit Feature-Liste und Klickmarkierungen:
+https://naroci.github.io/BeastsAndBumpkinsReplanted/editor.html
+
+BEI PROBLEMEN
+
+Datenfehler: Den Ordner waehlen, der assets UND recovered direkt enthaelt.
+F5 startet nicht: Das ZIP vollstaendig entpacken; enhanced\bin\bbgame-enhanced.exe
+muss vorhanden sein. Fehlermeldung aus der Konsole mit den Schritten melden.
+Verschobene Ansicht: Startposition unter der Karte anklicken.
+Unguenstige Aenderung: Rueckgaengig anklicken, bevor weitere Schritte folgen.
+
+TESTGRENZEN
+
+Windows-Build und native DLL-Abhaengigkeiten wurden auf Linux erzeugt/geprueft.
+Die Windows-x64-Regression unter Wine bestand mit 30 bytegleichen Exporten,
+199 bearbeitbaren Werten, Kartenwerkzeugen, Rueckgaengig und echtem F5-Spielstart.
+Eine Abnahme auf einem physischen Windows-PC steht weiterhin aus.
+
+Vier platzierbare Objektklassen; neue leere Karten, Mehrfachauswahl und ein
+vollstaendiger Skripteditor stehen noch aus. Schwarze Streifen an abrupten
+Hoehenkanten stammen aus dem originalen Zeichner und sind auch in F5 sichtbar.
+Originalmissionen werden beim Speichern geschuetzt. Eigene Missionen separat ablegen.
+
+editor-package.json nennt Build und eingebetteten Enhanced-Client.
+SHA256SUMS.txt enthaelt die Inhaltspruefsummen.
+EDITOR-PATCHNOTES.txt beschreibt dieses Editorpaket.

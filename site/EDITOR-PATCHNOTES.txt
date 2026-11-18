@@ -1,0 +1,26 @@
+Beasts & Bumpkins: Replanted - Missionseditor 0.1.0
+
+18.11.2026 [Windows-Testclient]
+- Eigenstaendiges Windows-x64-Paket mit eigener .NET-Laufzeit.
+- Start-Editor.cmd fragt nach dem Spieldatenordner und startet den Editor.
+- Enhanced 0.1.5 liegt fuer den getrennten F5-Spieltest bei. Die bereits
+  veroeffentlichten Spiel- und Launcherpakete muessen nicht ersetzt werden.
+- Native Windows-Bibliothek unter dem vom Editor erwarteten DLL-Namen.
+- Windows-Regression unter Wine: alle 30 Vorlagen bytegleich exportiert,
+  199 Werte sowie Terrain-, Objekt-, Hoehen- und Strassenwerkzeuge,
+  Rueckgaengig/Wiederholen und F5-Spielprobe geprueft.
+- Vollstaendige Abnahme auf einem physischen Windows-PC steht noch aus.
+
+14.-15.11.2026 [Verfuegbare Editorfunktionen]
+- Eigene Desktopoberflaeche im Spielstil, 30 Missionsvorlagen, .mis oeffnen
+  und als eigene Mission speichern.
+- Terrainpinsel mit acht Materialien und drei Groessen; Hoehenpinsel;
+  verbundene Strassen zeichnen und entfernen.
+- Baeume, Getreide, Huehner und Brunnen setzen und verschieben.
+- Startgold, unterstuetzte Objektvorraete und vorhandene Skriptbelohnungen.
+- Rueckgaengig/Wiederholen, Kartenuebersicht, Kamera- und Startpositionsknopf.
+- Mit F5 auch ungespeicherte Aenderungen im Enhanced-Spiel ausprobieren.
+
+Grenzen: vier Objektklassen, keine neuen leeren Karten, keine Mehrfachauswahl,
+kein vollstaendiger Skripteditor. Schwarze Streifen an abrupten Hoehenkanten
+sind eine bekannte Grenze des originalen Zeichners.
