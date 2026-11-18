@@ -1,0 +1,40 @@
+{
+  "format": "replanted-launcher-news",
+  "schemaVersion": 1,
+  "revision": "release-20261118-1",
+  "games": {
+    "legacy": {
+      "htmlUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#legacy",
+      "patchNotesUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#legacy",
+      "items": [
+        {
+          "id": "legacy-0.1.9-launcher-0.5.4",
+          "title": "Legacy 0.1.9 und Launcher 0.5.4",
+          "publishedAt": "2026-11-18T09:54:15Z",
+          "summary": "Neue Programmpakete für Linux x64 und Windows x64. Die bestehenden Spieldaten 1.0.0 werden weiterverwendet. Der Legacy-Freezevergleich ist bestanden.",
+          "url": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#legacy"
+        }
+      ]
+    },
+    "enhanced": {
+      "htmlUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#enhanced",
+      "patchNotesUrl": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#enhanced",
+      "items": [
+        {
+          "id": "enhanced-0.1.5",
+          "title": "Enhanced 0.1.5: LAN und CPU-Duell",
+          "publishedAt": "2026-11-18T09:54:15Z",
+          "summary": "Zwei eigene Dörfer im LAN gegeneinander, wählbare Dorffarben und vier CPU-Stufen. Verbesserte Dorfversorgung und Reaktion auf Krankheiten.",
+          "url": "https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html#enhanced"
+        },
+        {
+          "id": "editor-test-0.1.0",
+          "title": "Missionseditor zum Testen: Linux x64",
+          "publishedAt": "2026-11-18T09:54:15Z",
+          "summary": "Gelände, Höhen und verbundene Straßen malen, Objekte setzen und verschieben. Rückgängig und F5-Spieltest inklusive. Download und Schritt-für-Schritt-Anleitung sind verfügbar.",
+          "url": "https://naroci.github.io/BeastsAndBumpkinsReplanted/editor.html"
+        }
+      ]
+    }
+  }
+}

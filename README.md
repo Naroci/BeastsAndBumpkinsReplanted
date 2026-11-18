@@ -283,3 +283,46 @@ profile/Saves. Eine nicht veröffentlichte Vorlage aktiviert keine Downloads.
 kein Ersatz für die Update-Quelle in einem laufenden Launcher. Setup-ZIPs
 enthalten bereits die Ordnerstruktur; die Update-Datei benötigt weiterhin
 flache Launcherpakete, damit kein verschachteltes Installationslayout entsteht.
+
+
+## Release 18.11.2026, Editor und Launcher-Patchnotes
+
+Die Programmarchive aus [v181126](https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/tag/v181126)
+liefern Legacy 0.1.9, Enhanced 0.1.5 und Launcher 0.5.4 für Linux/Windows x64.
+Das gesonderte Editor-Testpaket 0.1.0 unterstützt Linux x64 und enthält Enhanced
+für F5. Die vorhandenen Spieldaten 1.0.0 behalten ihre bisherigen URLs/Hashes.
+
+- [Missionseditor: Download, echte Funktionsbilder und Schrittanleitung](https://naroci.github.io/BeastsAndBumpkinsReplanted/editor.html)
+- [Aktuelle Patchnotes](https://naroci.github.io/BeastsAndBumpkinsReplanted/patchnotes.html)
+- [Abgeschlossener Patchnotes-Export](https://naroci.github.io/BeastsAndBumpkinsReplanted/PATCHNOTES-2026-11-18.txt)
+
+### Meldungen und Patchnotes im Launcher pflegen
+
+`site/launcher-news-v1.json` ist der separate Nachrichtenfeed. Launcher 0.5.4
+findet ihn automatisch neben seiner Updatekatalog-URL. `games.legacy` und
+`games.enhanced` enthalten jeweils `patchNotesUrl`, `htmlUrl` und `items`.
+Der native Launcher zeigt die Klartextmeldungen an; „Patchnotes“ und
+„Weiterlesen“ öffnen die zugehörige Webseite. Ein Spielupdate installiert keine
+Newsdatei. Die Updatekataloge dürfen keine zusätzlichen Newsfelder erhalten.
+
+Für kommende Veröffentlichungen:
+
+1. Die abgeschlossene versionierte Patchnotes-Datei nach `site/` übernehmen und
+   die lesbare `patchnotes.html` aktualisieren. Vorhandene abgeschlossene
+   Textdateien behalten ihren Inhalt und Dateinamen.
+2. Im Newsfeed die betroffene Edition ergänzen: neue eindeutige `id`, `title`,
+   `publishedAt` als ISO-Datum mit Zeitzone, Klartext-`summary` und HTTPS-`url`.
+   `patchNotesUrl` auf den aktuellen Artikel bzw. Editionsanker setzen und
+   **`revision` bei jeder Inhaltsänderung erhöhen**. Maximal 32 Meldungen je Edition.
+3. Bei Programmupdates zusätzlich die vier Kataloge v2/v3 gemeinsam aktualisieren.
+   Setup- und flache Update-ZIPs bleiben getrennt. Der Editorlink wird auf
+   `editor.html` und auf der Startseite gepflegt.
+4. Quellen prüfen, committen und nach `main` pushen. Der Pages-Workflow publiziert
+   die Dateien. Danach News-JSON, Artikel, Anker und Releaseassets live prüfen.
+
+Bei diesem Release ist alles eingetragen. Wenn der Launcher alte oder keine
+Meldungen zeigt, „Neuigkeiten“ anklicken oder neu starten; die Anzeige ist je
+Edition abschaltbar. Bei einer eigenen Updatequelle wird deren gleichnamiges
+News-Sidecar verwendet. Die Redaktionstexte dieses Feeds sind deutsch; die
+Startseite bietet weiterhin alle fünf Sprachen mit gekennzeichneten deutschen
+Artikellinks.

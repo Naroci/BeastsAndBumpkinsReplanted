@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1b1510"><meta name="description" content="Gelände formen, Wege verbinden und die eigene Karte direkt im Spiel testen. Mit Bildern und einer Schritt-für-Schritt-Anleitung.">
+<title>Der Missionseditor · Replanted</title><link rel="icon" type="image/png" href="assets/seal.png"><link rel="stylesheet" href="styles.css"></head>
+<body><a class="skip-link" href="#main">Zum Inhalt</a>
+<header class="site-header"><a class="brand" href="index.html?lang=de"><img src="assets/seal.png" width="46" height="46" alt=""><span>BEASTS &amp; BUMPKINS<small>R E P L A N T E D</small></span></a>
+<nav aria-label="Hauptnavigation"><a href="index.html?lang=de#downloads">Downloads</a><a href="patchnotes.html">Patchnotes</a><a href="editor.html">Editor</a></nav></header>
+<main id="main" class="section release-article"><p class="eyebrow">RELEASE · 18. NOVEMBER 2026</p><h1>Der Missionseditor</h1><p class="lead">Gelände formen, Wege verbinden und die eigene Karte direkt im Spiel testen. Mit Bildern und einer Schritt-für-Schritt-Anleitung.</p>
+<div class="release-box"><p class="eyebrow">TESTCLIENT 0.1.0 · LINUX X64</p>
+<p>Der eigenständige Missionseditor enthält seine .NET-Laufzeit und Enhanced 0.1.5 für Spieltests mit F5. Die bereits veröffentlichten Spieldaten 1.0.0 werden zusätzlich benötigt.</p>
+<div class="release-actions"><a class="button primary" id="editor-download" href="https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v181126/replanted-editor-test-linux-x64-0.1.0-20261118-f236d61b.zip">Editor herunterladen · 54,1 MiB ↓</a><a class="text-link" href="EDITOR-TESTCLIENT.txt" download>Anleitung als Textdatei ↓</a></div>
+<p class="package-meta">SHA-256: <code>dbd8c9396e25ca33b253bb6726e2006d7614ad1fd003dc0362ac0963deecfb17</code></p></div>
+<nav class="guide-nav" aria-label="Editoranleitung"><a href="#start">1. Entpacken</a><a href="#daten">2. Daten finden</a><a href="#oeffnen">3. Starten</a><a href="#werkzeuge">4. Karte bearbeiten</a><a href="#spieltest">5. Testen und speichern</a><a href="#hilfe">Hilfe</a></nav>
+<p>Du brauchst einen Linux-PC mit Intel-/AMD-64-Bit-Prozessor, das Editor-ZIP und die Spieldaten. Für die erste Probe sind keine Programmierkenntnisse nötig. Die folgenden Bilder zeigen echte Aufnahmen einer bearbeiteten Beispielmission.</p>
+<figure class="editor-shot"><a href="assets/editor/strassen.webp"><img src="assets/editor/strassen.webp" width="1200" height="760" loading="eager" alt="Missionseditor mit Werkzeugwahl links, Kartenansicht rechts und Spielprobe-Schaltfläche oben rechts."></a><figcaption>So sieht der Editor aus: links die Werkzeuge, rechts die Karte. Oben findest du Speichern, Rückgängig und Spielprobe · F5. <a href="assets/editor/strassen.webp">Bild in voller Größe öffnen ↗</a></figcaption></figure>
+<section id="start"><p class="eyebrow">SCHRITT 1</p><h2>Das Editorpaket entpacken</h2><ol>
+<li>Oben auf <strong>Editor herunterladen</strong> klicken und warten, bis der Download fertig ist.</li>
+<li>Im Downloadordner das ZIP über die Entpacken-Funktion deines Dateimanagers vollständig entpacken.</li>
+<li>Den entpackten Ordner <code>replanted-editor-test-linux-x64</code> öffnen. Darin müssen <code>Start-Editor.sh</code>, <code>replanted-editor</code> und der Ordner <code>enhanced</code> liegen.</li></ol>
+<p class="guide-tip"><strong>Kontrollpunkt:</strong> Du siehst die Datei <code>Start-Editor.sh</code> im Dateimanager. Alle Dateien des Pakets zusammen in diesem Ordner lassen.</p></section>
+<section id="daten"><p class="eyebrow">SCHRITT 2</p><h2>Den richtigen Spieldatenordner finden</h2>
+<p>Wenn das Spiel bereits über den Launcher läuft, verwende dessen Spieldatenpfad aus den Spieleinstellungen. So ist kein erneuter Datendownload nötig.</p>
+<p>Noch keine Daten vorhanden? Das <a href="https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/download/v01112026/beasts-bumpkins-replanted-game-data-1.0.0.zip">Spieldatenpaket 1.0.0 herunterladen</a> und vollständig entpacken. Darin den Unterordner <code>data</code> öffnen.</p>
+<p class="guide-tip"><strong>Kontrollpunkt:</strong> Der richtige Ordner enthält diese beiden Unterordner:</p>
+<pre><code>data/                  ← diesen Ordnerpfad verwenden
+├── assets/
+│   └── missions/
+│       └── m1.mis
+└── recovered/
+    └── palettes/
+        └── titlepalette.rgb</code></pre>
+<p>Kopiere den vollständigen Pfad dieses Ordners aus der Adresszeile des Dateimanagers. In KDE/Dolphin blendet <kbd>Strg+L</kbd> den kopierbaren Pfad ein. Bewahre ihn für den nächsten Schritt auf.</p></section>
+<section id="oeffnen"><p class="eyebrow">SCHRITT 3</p><h2>Den Editor starten</h2><ol>
+<li>Zurück in den Editorordner aus Schritt 1 wechseln, in dem <code>Start-Editor.sh</code> liegt.</li>
+<li>Dort ein Terminal öffnen. Unter KDE/Dolphin öffnet <kbd>Umschalt+F4</kbd> ein Terminal im aktuellen Ordner. Die Tastenkürzel sind im <a href="https://docs.kde.org/stable_kf6/en/dolphin/dolphin/command-reference.html">Dolphin-Handbuch</a> beschrieben.</li>
+<li>Diesen Befehl kopieren, im Terminal einfügen und <kbd>Enter</kbd> drücken. Damit werden die drei Programme ausführbar:</li></ol>
+<pre><code>chmod +x Start-Editor.sh replanted-editor enhanced/bin/bbgame-enhanced</code></pre>
+<p>Anschließend den Editor starten. <strong>Ersetze <code>/DEIN/PFAD/data</code> durch den zuvor kopierten Datenpfad.</strong> Die Anführungszeichen stehen lassen, damit auch Leerzeichen im Pfad funktionieren:</p>
+<pre><code>./Start-Editor.sh "/DEIN/PFAD/data"</code></pre>
+<p class="guide-tip"><strong>Kontrollpunkt:</strong> Das Editorfenster öffnet Mission 3. Das Terminal während der Bearbeitung geöffnet lassen; dort erscheinen mögliche Fehlermeldungen.</p>
+<p>Geprüft auf Kubuntu 26.04 x64. Die .NET-Laufzeit und Enhanced 0.1.5 sind bereits im Paket. Eine grafische Linux-Sitzung mit den üblichen X11-/Fontconfig-Systembibliotheken wird benötigt.</p></section>
+<section id="werkzeuge"><p class="eyebrow">SCHRITT 4</p><h2>Die erste Karte bearbeiten</h2>
+<p>Zum Einstieg oben <strong>Vorlagen…</strong> öffnen und eine Kampagnenmission auswählen. Rechts oben den Reiter <strong>Karte</strong> anklicken. Über <strong>Startposition</strong> unter der Karte gelangst du zum eigenen Dorf.</p>
+<h3>Gelände malen</h3><ol><li>Links unter <strong>Werkzeug</strong> den <strong>Terrainpinsel</strong> wählen.</li><li>Unter <strong>Gelände</strong> das gewünschte Material auswählen, zum Beispiel Wasser. Mit einem Pinseldurchmesser von <strong>1 Feld</strong> beginnen.</li><li>Auf einer freien Stelle der Karte die linke Maustaste gedrückt halten und ziehen. Beim Loslassen wird der ganze Strich übernommen.</li></ol>
+<figure class="editor-shot"><a href="assets/editor/terrain.webp"><img src="assets/editor/terrain.webp" width="900" height="600" loading="lazy" alt="Terrainpinsel mit gewähltem Wasser, fünf Feldern Pinseldurchmesser und weißem Feldraster über einem See."></a><figcaption>Beispiel: Wasser mit einem breiten Pinsel. Das helle Raster zeigt, welche Felder der Pinsel gerade berührt. Dateinamen und Pfade im Bild sind nur Beispiele. <a href="assets/editor/terrain.webp">Bild in voller Größe öffnen ↗</a></figcaption></figure>
+<h3>Höhen verändern</h3><p>Unter <strong>Werkzeug</strong> den <strong>Höhenpinsel</strong> wählen. Unter <strong>Höhe</strong> zwischen <strong>Anheben</strong> und <strong>Absenken</strong> wechseln, dann mit der linken Maustaste malen. Jeder Strich verändert die Höhe um eine Stufe. Auf Höhe 0 entsteht Wasser. Berührt ein Strich geschützte Objektflächen, wird er nicht übernommen.</p>
+<figure class="editor-shot"><a href="assets/editor/hoehen.webp"><img src="assets/editor/hoehen.webp" width="1166" height="500" loading="lazy" alt="Ausschnitt des Höhenpinsels mit Anheben, drei Feldern Pinselgröße und angehobenem Gelände am Weg."></a><figcaption>Die linke Palette zeigt Werkzeug, Richtung und Pinselgröße. Schwarze Streifen an steilen Kanten sind eine bekannte Darstellungsgrenze des originalen Zeichners. <a href="assets/editor/hoehen.webp">Bild in voller Größe öffnen ↗</a></figcaption></figure>
+<h3>Straßen zeichnen und entfernen</h3><p><strong>Straßenpinsel</strong> auswählen und <strong>Straße → Zeichnen</strong> einstellen. Mit gedrückter linker Maustaste über die Karte ziehen. Die helle Vorschau im großen Bild oben zeigt den Verlauf. Beim Loslassen entstehen verbundene Straßenstücke; vorhandene Nachbarwege schließen an. Zum Radieren <strong>Entfernen</strong> wählen und erneut über den Abschnitt ziehen.</p>
+<h3>Objekte setzen und verschieben</h3><p><strong>Objekt setzen</strong> auswählen, dann Baum, Getreide, Huhn oder Brunnen wählen und auf eine freie passende Stelle klicken. Mit <strong>Objekt verschieben</strong> die sichtbare Figur oder das Gebäude mit gedrückter linker Maustaste zum Zielfeld ziehen. Eine ungültige Platzierung wird nicht übernommen.</p>
+<p class="guide-tip"><strong>Etwas ging schief?</strong> Oben auf <strong>Rückgängig</strong> klicken oder <kbd>Strg+Z</kbd> drücken. Ein ganzer Pinselstrich zählt als ein Schritt. <kbd>Strg+Umschalt+Z</kbd> oder <kbd>Strg+Y</kbd> stellt ihn wieder her. <kbd>Esc</kbd> bricht die gerade laufende Geste ab.</p>
+<p>Mit den Pfeilen unter der Karte oder einem Klick auf die Übersicht links oben verschiebst du den sichtbaren Bereich. Die Reiter <strong>Spieler</strong>, <strong>Objekte</strong> und <strong>Skripte</strong> bieten außerdem Startgold, ausgewählte Vorräte und vorhandene Skriptbelohnungen.</p></section>
+<section id="spieltest"><p class="eyebrow">SCHRITT 5</p><h2>Im Spiel testen und die Karte behalten</h2><ol>
+<li>Oben rechts <strong>Spielprobe · F5</strong> anklicken oder <kbd>F5</kbd> drücken. Auch noch ungespeicherte Änderungen werden mitgenommen.</li>
+<li>Ein separates Enhanced-Spielfenster öffnet sich am eigenen Dorf. Prüfe dort deine Wege, Höhen und Objekte.</li>
+<li>Das Spielfenster schließen oder zum Editor zurückwechseln und erneut <kbd>F5</kbd> drücken. Danach kannst du im Editor weiterarbeiten.</li>
+<li>Oben <strong>Speichern unter…</strong> anklicken und eine eigene Datei, zum Beispiel <code>Meine erste Karte.mis</code>, in deinem Dokumenteordner speichern. Damit bleiben die Originalmissionen erhalten.</li>
+<li>Spätere Änderungen dieser eigenen Karte mit <strong>Speichern</strong> oder <kbd>Strg+S</kbd> sichern. Beim nächsten Mal über <strong>Datei öffnen…</strong> wieder öffnen.</li></ol>
+<figure class="editor-shot"><a href="assets/editor/spieltest.webp"><img src="assets/editor/spieltest.webp" width="960" height="720" loading="lazy" alt="Enhanced-Spielprobe mit Spiel-HUD, See und erhöhtem Weg neben dem eigenen Dorf."></a><figcaption>Das ist die echte F5-Spielprobe derselben bearbeiteten Beispielkarte. Am oberen Spiel-HUD erkennst du, dass du im Spiel und nicht im Editor bist. <a href="assets/editor/spieltest.webp">Bild in voller Größe öffnen ↗</a></figcaption></figure>
+<p class="guide-tip"><strong>Geschafft:</strong> Deine eigene <code>.mis</code> liegt im gewählten Ordner. Ein Spieltest allein speichert diese Datei noch nicht; dafür immer <strong>Speichern</strong> verwenden.</p></section>
+<section id="hilfe"><h2>Wenn etwas nicht klappt</h2><div class="guide-help">
+<details><summary>„Start-Editor.sh: No such file or directory“</summary><p>Das Terminal steht im falschen Ordner oder das ZIP ist noch nicht vollständig entpackt. Öffne den Ordner, in dem <code>Start-Editor.sh</code> sichtbar liegt, und öffne dort ein neues Terminal.</p></details>
+<details><summary>„Permission denied“ / „Keine Berechtigung“</summary><p>Führe den <code>chmod +x</code>-Befehl aus Schritt 3 erneut aus. Liegt der Editor auf einem Laufwerk, das keine Programmausführung erlaubt, entpacke ihn in einen eigenen Ordner unter deinem Benutzerverzeichnis und starte dort erneut.</p></details>
+<details><summary>„Der Datenordner muss assets/ und recovered/ … enthalten“</summary><p>Prüfe den Ordnerbaum aus Schritt 2. Der Startbefehl benötigt den Ordner, der beide Unterordner enthält. Kopiere seinen vollständigen Pfad in die Anführungszeichen. Der Beispieltext <code>/DEIN/PFAD/data</code> muss vollständig ersetzt sein.</p></details>
+<details><summary>Die Karte ist aus dem Blick geraten</summary><p>Unter der Karte auf <strong>Startposition</strong> klicken. Das bringt die Ansicht zurück zum eigenen Dorf.</p></details>
+<details><summary>Ein Pinselstrich oder Objekt wird nicht übernommen</summary><p>Probiere eine freie Fläche und einen kleineren Pinsel. Geschützte Objektflächen verhindern Höhenänderungen; Objekte benötigen einen gültigen freien Platz. Lies die Statusmeldung unten im Editor.</p></details>
+<details><summary>F5 startet kein Spiel</summary><p>Im Editorordner muss <code>enhanced/bin/bbgame-enhanced</code> vorhanden sein. Wiederhole den <code>chmod +x</code>-Befehl aus Schritt 3, prüfe den Datenpfad und lies die Meldung unten im Editor sowie die Ausgabe im Terminal. Für eine Fehlermeldung bitte diese Ausgabe mitsenden.</p></details>
+<details><summary>Kann ich das unter Windows verwenden?</summary><p>Dieses Editor-Testpaket ist für Linux x64. Die separat veröffentlichten Windows-Spiel- und Launcherpakete enthalten noch keinen abgenommenen Windows-Editor.</p></details></div></section>
+<section id="grenzen"><h2>Was noch offen ist</h2><p>Die Objektpalette enthält bislang vier Klassen. Neue leere Karten, Mehrfachauswahl und ein vollständiger Skripteditor stehen noch aus. An abrupten Höhenkanten zeigt der originale Zeichner schwarze Streifen, auch in der Spielprobe.</p>
+<p>Bei Fehlermeldungen bitte Werkzeug, Mission, genaue Schritte und Bildschirmauflösung angeben. Eine betroffene eigene <code>.mis</code> und Terminalmeldungen helfen bei der Reproduktion.</p><a class="text-link" href="patchnotes.html#editor">Änderungen am Editor →</a></section>
+</main>
+<footer class="site-footer"><a class="footer-brand" href="index.html?lang=de">Beasts &amp; Bumpkins <span>REPLANTED</span></a><p>Unabhängiges, nicht kommerzielles Erhaltungsprojekt.</p><a href="https://github.com/Naroci/BeastsAndBumpkinsReplanted/releases/tag/v181126">Release auf GitHub ↗</a></footer></body></html>

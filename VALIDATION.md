@@ -220,3 +220,30 @@ Pages-Workflow, keine veröffentlichten Spielpakete oder Launcherdownloads.
 mit dem tatsächlichen Ziel erneut bestanden. Alle Spiel-/Input-/Renderpfade
 sowie das Sprachverhalten bleiben unverändert; geändert sind ausschließlich
 Adressvorgaben, Testfixtureadressen und Dokumentation.
+
+
+## PUB-20261118 · Programmrelease, Patchnotes und Editorseite
+
+Alle neun neuen ZIPs wurden anhand von Dateiname, öffentlichem Uploadstatus,
+Größe und SHA-256 mit den GitHub-Assets von `v181126` abgeglichen. Die lokalen
+Dateihashes stimmen ebenfalls. Vier Quellkataloge v2/v3, Setup-/Updaterollen,
+Legacy-Baseline und unveränderte Datenkataloge wurden geprüft. Der Online-Pages-
+Build prüft auch die beibehaltenen Datenassets; `updates.json` und `downloads.json`
+werden weiterhin aus ihren jeweiligen Quellen generiert.
+
+46 Distributionstests und die Frontendprüfungen aller fünf Sprachen bestehen.
+65 lokale Ressourcen-/Ankerverweise der drei HTML-Seiten wurden aufgelöst.
+Die Newsdatei besteht den strengen Publishervalidator und den Parser aus der
+wirklich ausgelieferten `Replanted.Launcher.Core.dll` 0.5.4. Beide Editionen
+finden denselben Feed neben der Katalog-URL und getrennte Patchnotes-Anker.
+Dies prüft den produktiven Parser, keine neue vollständige native UI-Abnahme.
+
+Die Editor-Unterseite verwendet vier unveränderte, hashgeprüfte WebP-Aufnahmen
+der Terrain-, Höhen-, Straßen- und F5-Abnahmen. Bildlinks öffnen die volle Größe;
+Textalternativen und Bildunterschriften benennen Werkzeug und Grenzen. Desktop-
+und schmale Browseransichten wurden visuell geprüft; Anleitungen und Codeblöcke
+bleiben ohne horizontalen Seitenüberlauf. Die Darstellung folgt dem vorhandenen
+Webseitenstil; Spiel-/HUD-/Rendererquellen und Binärpakete bleiben unverändert.
+Die Bedienbefehle wurden mit dem gepackten Startskript und die Dolphin-Kurzbefehle
+mit dem offiziellen Handbuch abgeglichen. Ein neuer Windows-Gerätetest und eine
+vollständige Spielabnahme sind nicht Bestandteil dieser Veröffentlichung.

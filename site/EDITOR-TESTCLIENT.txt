@@ -1,0 +1,76 @@
+Beasts & Bumpkins: Replanted – Missionseditor
+Linux-x64-Testclient 0.1.0 · Stand 18.11.2026
+
+Das Paket enthält den eigenständigen Editor, seine .NET-Laufzeit und
+Enhanced 0.1.5 für die Spielprobe. Als Datenbasis dient Game Data 1.0.0.
+Zum Starten wird der Ordner benötigt, der assets/ und recovered/ enthält.
+Diesen Datenpfad zeigt auch der Launcher in den Spieleinstellungen an.
+Eine vorhandene Installation oder das bereits veröffentlichte Datenpaket
+kann dafür verwendet werden.
+
+START
+
+1. Das Editor-ZIP vollständig in einen eigenen Ordner entpacken.
+2. Dort ein Terminal öffnen und ausführen:
+
+   chmod +x Start-Editor.sh replanted-editor enhanced/bin/bbgame-enhanced
+   ./Start-Editor.sh "/vollstaendiger/pfad/zum/data-ordner"
+
+   Im angegebenen Ordner muss assets/missions/m1.mis liegen.
+   Nach dem Entpacken des Daten-ZIPs ist dies dessen Unterordner data/.
+3. Zum Öffnen einer eigenen Mission deren Pfad zusätzlich angeben:
+
+   ./Start-Editor.sh "/pfad/zum/data-ordner" "/pfad/Meine Karte.mis"
+
+Der Build wurde auf Kubuntu 26.04 x64 geprüft. Eine grafische
+Linux-Desktopsitzung und die üblichen X11-/Fontconfig-Systembibliotheken
+werden vorausgesetzt. Die .NET-Laufzeit liegt im Paket.
+
+ERSTER KARTENTEST
+
+1. Der Editor öffnet Mission 3. Über Vorlagen eine andere Mission auswählen.
+2. Im Reiter Karte den Terrainpinsel wählen und mit gedrückter linker
+   Maustaste malen. Die Durchmesser sind 1, 3 und 5 Felder.
+3. Der Höhenpinsel hebt oder senkt pro Strich eine Stufe. Beim Absenken auf
+   Höhe 0 entsteht Wasser. Besetzte Objektflächen schützen den ganzen
+   betroffenen Strich. Die aktuelle Höhe steht links in der Palette.
+4. Der Straßenpinsel verbindet auch diagonal gezogene Wege und schließt
+   an vorhandene Straßen an. Entfernen radiert Abschnitte und berechnet
+   die benachbarten Straßenstücke neu.
+5. Objekt setzen bietet Baum, Getreide, Huhn und Brunnen. Mit Objekt
+   verschieben die sichtbare Figur oder das Gebäude zum Zielfeld ziehen.
+6. Esc verwirft die laufende Geste. Strg+Z nimmt den ganzen Arbeitsschritt
+   zurück. Strg+Umschalt+Z oder Strg+Y stellt ihn wieder her.
+7. Mit F5 den aktuellen Stand im separaten Enhanced-Spiel testen.
+   Ungespeicherte Änderungen werden übernommen. Das Spiel startet am
+   eigenen Dorf. Zum Editor zurückwechseln und den Spieltest mit F5
+   beenden oder das Spielfenster regulär schließen.
+8. Mit Speichern unter eine eigene .mis außerhalb der Spieldatenordner
+   anlegen. Bei einer eigenen Mission speichert Strg+S direkt.
+
+Weitere Reiter bieten Startgold, ausgewählte Objektvorräte und vorhandene
+Skriptbelohnungen. Ein Klick auf die Kartenübersicht verschiebt die Kamera.
+Startposition führt zum eigenen Dorf zurück.
+
+BEKANNTE TESTGRENZEN
+
+Die Objektpalette enthält bisher vier Klassen. Neue leere Karten,
+Mehrfachauswahl sowie ein vollständiger Skripteditor sind noch offen.
+An abrupten Höhenkanten zeigt der originale Zeichner schwarze Streifen.
+Diese sind auch in der Spielprobe sichtbar.
+
+Dieses Editorpaket ist für Linux x64. Windows-Spiel und Windows-Launcher
+werden separat bereitgestellt. Eine Windows-Abnahme des Editors steht aus.
+
+FEHLER MELDEN
+
+Bitte Werkzeug, Mission, Schritte bis zum Fehler und Bildschirmauflösung
+angeben. Bei Bedarf die eigene .mis mitsenden. Meldungen aus dem Terminal
+helfen insbesondere bei fehlenden Daten oder einem gescheiterten F5-Start.
+
+BUILD UND NACHWEISE
+
+Editorquellen und Spielquellen stammen aus f236d61b.
+Die Datei editor-package.json nennt Versionen und Quellrevision.
+SHA256SUMS.txt enthält die Prüfsummen des Paketinhalts.
+Die beigefügten Patchnotes beschreiben den aktuellen Releaseumfang.

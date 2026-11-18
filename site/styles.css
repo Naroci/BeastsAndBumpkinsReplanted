@@ -13,3 +13,24 @@
 @media(max-width:1100px){.site-header{flex-wrap:wrap;height:auto;min-height:86px;padding-block:16px}.site-header nav{gap:20px}.language-picker>span{display:none}}
 @media(max-width:600px){.site-header{justify-content:space-between;gap:12px}.site-header nav{order:3;gap:16px}.language-picker{order:2}.language-picker select{max-width:100px;padding-inline:6px}.brand{order:1}}
 @media(max-width:600px){.project h2 br{display:initial}}
+
+/* Release articles and the dedicated Linux editor download. */
+.release-cards{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px}
+.release-cards article,.release-box{padding:28px;border:1px solid var(--line);border-radius:5px;background:#231b13}
+.release-cards h3{margin:10px 0}.release-cards p:not(.eyebrow){font-size:13px;margin-bottom:18px}
+.release-actions{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:20px}
+.release-article{max-width:90%;width:920px}.release-article h1{font-size:clamp(34px,6vw,52px);line-height:1.15;margin:18px 0}
+.release-article>.lead{font-size:18px;margin-bottom:30px}.release-article section{margin-top:38px}
+.release-article h2{font-size:29px;margin-bottom:18px}.release-article p{margin-block:14px}
+.release-article ul,.release-article ol{padding-left:24px}.release-article li{margin-bottom:12px}
+.release-article pre{padding:18px;background:#15110d;border:1px solid var(--line);border-radius:4px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;font-size:13px}
+.release-article code{overflow-wrap:anywhere}.release-article kbd{font-size:.9em;color:var(--light);background:#322619;border:1px solid var(--line);border-radius:3px;padding:2px 5px}
+.release-article summary{cursor:pointer;color:var(--light)}.patch-journal{line-height:1.8}
+@media(max-width:600px){.release-cards{grid-template-columns:1fr;gap:20px}.release-cards article,.release-box{padding:20px}.release-actions{align-items:stretch;flex-direction:column}.release-actions .button{min-width:0;text-align:center}.release-article h2{font-size:25px}.release-article pre{padding:12px;font-size:12px}}
+
+.guide-nav{display:flex;flex-wrap:wrap;gap:12px 22px;margin:28px 0;font-size:13px;padding-block:18px;border-block:1px solid var(--line)}
+.editor-shot{margin:28px 0}.editor-shot img{display:block;width:100%;height:auto;border:1px solid #765632;border-radius:4px}.editor-shot figcaption{font-size:12px;line-height:1.7;margin-top:10px;color:#c4af8b}.editor-shot figcaption a{display:inline-block}
+.release-article h3{margin:30px 0 12px;font-size:23px}.guide-tip{padding:16px 20px;border-left:3px solid #b18a50;background:#231b13}.guide-help details{padding:16px 0;border-bottom:1px solid var(--line)}
+@media(max-width:600px){.guide-nav{gap:10px 16px}.guide-tip{padding:12px}.release-article h3{font-size:21px}}
+
+.site-header nav{flex-wrap:wrap;row-gap:10px}
